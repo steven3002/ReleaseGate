@@ -7,7 +7,7 @@ import {
 import * as sq from '@sqds/multisig';
 import type { ChainReader } from '../chain/chain-reader';
 import type { Instruction } from '../chain/instruction';
-import { deriveVaultPda } from './addresses';
+import { deriveMultisigPda, deriveVaultPda } from './addresses';
 
 export interface CreateGuardedProposalParams {
   readonly multisig: string;
@@ -28,6 +28,15 @@ export interface ExecuteProposalParams {
   readonly multisig: string;
   readonly transactionIndex: bigint;
   readonly member: string;
+}
+
+export interface CreateMultisigParams {
+  readonly createKey: string;
+  readonly creator: string;
+  readonly threshold: number;
+  readonly members: readonly string[];
+  readonly timeLockSeconds?: number | undefined;
+  readonly treasury?: string | undefined;
 }
 
 export function toCoreInstruction(ix: TransactionInstruction): Instruction {
@@ -143,4 +152,30 @@ export async function buildExecute(params: ExecuteProposalParams): Promise<Instr
   });
 
   return toCoreInstruction(instruction);
+}
+
+export function buildCreateMultisig(params: CreateMultisigParams): Instruction {
+  const createKey = new PublicKey(params.createKey);
+  const creator = new PublicKey(params.creator);
+  const multisigPda = new PublicKey(deriveMultisigPda(params.createKey).address);
+  const treasury = new PublicKey(
+    params.treasury ?? 'HM5y4mz3Bt9JY9mr1hkyhnvqxSH4H2u2451j7Hc2dtvK',
+  );
+
+  const ix = sq.instructions.multisigCreateV2({
+    createKey,
+    creator,
+    multisigPda,
+    configAuthority: null,
+    threshold: params.threshold,
+    members: params.members.map((address) => ({
+      key: new PublicKey(address),
+      permissions: sq.types.Permissions.all(),
+    })),
+    timeLock: params.timeLockSeconds ?? 0,
+    rentCollector: null,
+    treasury,
+  });
+
+  return toCoreInstruction(ix);
 }

@@ -1,0 +1,226 @@
+{
+  "command": "inspect",
+  "timestamp": "2026-10-11T11:01:22.403Z",
+  "cluster": "devnet",
+  "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+  "inputs": {
+    "multisig": "HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR",
+    "transactionIndex": 1,
+    "manifestPath": "../../evidence/devnet/staging/phone-fixture-manifest-v2.json",
+    "artifactPath": "../../programs/release-demo/target/deploy/release_demo_v2.so"
+  },
+  "addresses": {
+    "multisig": "HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR",
+    "proposal": "HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR"
+  },
+  "signatures": [],
+  "slots": {
+    "contextSlot": 509880355
+  },
+  "outcome": "success",
+  "result": {
+    "shape": "guarded-upgrade",
+    "artifactMatch": "matches",
+    "executionConditions": "verified",
+    "verdict": {
+      "artifactMatch": "matches",
+      "executionConditions": "verified",
+      "provenance": "recorded",
+      "checks": [
+        {
+          "id": "cluster.genesis",
+          "group": "identity",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "manifest.cluster",
+          "group": "identity",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "manifest.multisig",
+          "group": "identity",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "manifest.vault",
+          "group": "identity",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "manifest.program",
+          "group": "identity",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "program.account",
+          "group": "deployment",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "transaction.kind",
+          "group": "transaction",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "transaction.resolved",
+          "group": "transaction",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "transaction.supported",
+          "group": "transaction",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "guard.complete",
+          "group": "transaction",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "guard.length",
+          "group": "transaction",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "guard.hash",
+          "group": "transaction",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "guard.slot",
+          "group": "transaction",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "buffer.owner",
+          "group": "buffer",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "buffer.state",
+          "group": "buffer",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "buffer.authority",
+          "group": "buffer",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "buffer.length",
+          "group": "buffer",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "buffer.bytes",
+          "group": "buffer",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "programdata.state",
+          "group": "deployment",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "programdata.authority",
+          "group": "deployment",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "deployment.slot",
+          "group": "deployment",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "programdata.capacity",
+          "group": "deployment",
+          "status": "pass",
+          "blocking": false,
+          "expected": ">= 3056",
+          "actual": 4045
+        },
+        {
+          "id": "artifact.length",
+          "group": "artifact",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "artifact.sha256",
+          "group": "artifact",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "artifact.keccak256",
+          "group": "artifact",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "provenance.manifest",
+          "group": "provenance",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "provenance.source",
+          "group": "provenance",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "provenance.attestation",
+          "group": "provenance",
+          "status": "pass",
+          "blocking": true
+        }
+      ],
+      "actions": {
+        "approve": {
+          "allowed": true,
+          "reasons": []
+        },
+        "reject": {
+          "allowed": true,
+          "reasons": []
+        },
+        "execute": {
+          "allowed": false,
+          "reasons": [
+            "Proposal is Active, must be Approved to execute",
+            "Proposal is not in Approved status"
+          ]
+        },
+        "createGuardedReplacement": {
+          "allowed": false,
+          "reasons": [
+            "Transaction shape is guarded-upgrade, replacement only offered for unguarded-upgrade or partial-guard"
+          ]
+        }
+      }
+    }
+  }
+}

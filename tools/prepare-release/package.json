@@ -10,6 +10,7 @@
     "test": "tsx --test test/*.test.ts"
   },
   "dependencies": {
+    "@solana/web3.js": "1.98.4",
     "release-core": "*"
   },
   "devDependencies": {

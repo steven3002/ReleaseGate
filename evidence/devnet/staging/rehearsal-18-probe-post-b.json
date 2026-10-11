@@ -1,0 +1,36 @@
+{
+  "command": "probe",
+  "timestamp": "2026-10-11T10:57:00.247Z",
+  "cluster": "devnet",
+  "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+  "inputs": {
+    "program": "HBQwLQNsKKeyDxRqH8HKRzTuKy5v4HJFcZ9T38wskono",
+    "inputData": "probe-test"
+  },
+  "addresses": {
+    "program": "HBQwLQNsKKeyDxRqH8HKRzTuKy5v4HJFcZ9T38wskono"
+  },
+  "signatures": [],
+  "slots": {},
+  "outcome": "success",
+  "result": {
+    "logs": [
+      "Program HBQwLQNsKKeyDxRqH8HKRzTuKy5v4HJFcZ9T38wskono invoke [1]",
+      "Program log: Program release-demo version 2 running: quadratic transform",
+      "Program log: Program release-demo version 2 execution complete",
+      "Program HBQwLQNsKKeyDxRqH8HKRzTuKy5v4HJFcZ9T38wskono consumed 384 of 200000 compute units",
+      "Program return: HBQwLQNsKKeyDxRqH8HKRzTuKy5v4HJFcZ9T38wskono VjI6Pdn43lzuFFcC",
+      "Program HBQwLQNsKKeyDxRqH8HKRzTuKy5v4HJFcZ9T38wskono success"
+    ],
+    "returnDataHex": "56323a3dd9f8de5cee145702",
+    "returnDataString": "V2:=���\\�\u0014W\u0002"
+  },
+  "logs": [
+    "Program HBQwLQNsKKeyDxRqH8HKRzTuKy5v4HJFcZ9T38wskono invoke [1]",
+    "Program log: Program release-demo version 2 running: quadratic transform",
+    "Program log: Program release-demo version 2 execution complete",
+    "Program HBQwLQNsKKeyDxRqH8HKRzTuKy5v4HJFcZ9T38wskono consumed 384 of 200000 compute units",
+    "Program return: HBQwLQNsKKeyDxRqH8HKRzTuKy5v4HJFcZ9T38wskono VjI6Pdn43lzuFFcC",
+    "Program HBQwLQNsKKeyDxRqH8HKRzTuKy5v4HJFcZ9T38wskono success"
+  ]
+}

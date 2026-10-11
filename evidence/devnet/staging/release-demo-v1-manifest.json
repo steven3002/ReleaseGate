@@ -1,0 +1,30 @@
+{
+  "schema": "releasegate.manifest/1",
+  "release": {
+    "name": "release-demo",
+    "version": "2"
+  },
+  "cluster": {
+    "name": "devnet",
+    "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG"
+  },
+  "multisig": "8H85VCEgfEFL4doZ4WE2TobwsX1FX9cxCHMqi2Y89XDh",
+  "vaultIndex": 0,
+  "vault": "8LHDYjA1ckJtdh4RaStGLKKbwoGXrj3Hiszs3ao2aD2D",
+  "program": "HBQwLQNsKKeyDxRqH8HKRzTuKy5v4HJFcZ9T38wskono",
+  "expectedDeploymentSlot": 509879231,
+  "artifact": {
+    "fileName": "release_demo_v1.so",
+    "length": 3040,
+    "sha256": "1ee251d157d460e48e650990a411a7e6b9bb8181394a28bf6e76b1622356b458",
+    "keccak256": "6fb74b4347f26cb54c5c7cbdb42a2dfc84e1c8b6b5c827f08efa4f35dde1dd34",
+    "verifiedBuildSha256": "24ac4fa506053212acce24e3c8063c9a7180d45d6cb3fd6f9f50a1bff1da5d0a"
+  },
+  "provenance": {
+    "sourceRepository": "https://github.com/example/release-demo",
+    "commit": "0000000000000000000000000000000000000000",
+    "buildMethod": "cargo-build-sbf",
+    "builder": "release-preparer",
+    "builtAt": "2026-10-11T10:58:12.450Z"
+  }
+}

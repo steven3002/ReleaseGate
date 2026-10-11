@@ -1,0 +1,31 @@
+{
+  "command": "stage-program",
+  "timestamp": "2026-10-11T10:51:58.131Z",
+  "cluster": "devnet",
+  "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+  "inputs": {
+    "binaryPath": "../../programs/release-demo/target/deploy/release_demo_v1.so",
+    "programId": "HBQwLQNsKKeyDxRqH8HKRzTuKy5v4HJFcZ9T38wskono",
+    "multisig": "8H85VCEgfEFL4doZ4WE2TobwsX1FX9cxCHMqi2Y89XDh",
+    "vaultIndex": 0,
+    "maxLen": 4000
+  },
+  "addresses": {
+    "program": "HBQwLQNsKKeyDxRqH8HKRzTuKy5v4HJFcZ9T38wskono",
+    "programData": "3nhRkGHAxEYmZTrEgS1daEHX2346C5WpSHYQA87NcA35",
+    "vault": "8LHDYjA1ckJtdh4RaStGLKKbwoGXrj3Hiszs3ao2aD2D",
+    "multisig": "8H85VCEgfEFL4doZ4WE2TobwsX1FX9cxCHMqi2Y89XDh",
+    "loader": "BPFLoaderUpgradeab1e11111111111111111111111"
+  },
+  "signatures": [],
+  "slots": {
+    "deploymentSlot": 509877942
+  },
+  "outcome": "success",
+  "result": {
+    "programId": "HBQwLQNsKKeyDxRqH8HKRzTuKy5v4HJFcZ9T38wskono",
+    "programDataAddress": "3nhRkGHAxEYmZTrEgS1daEHX2346C5WpSHYQA87NcA35",
+    "upgradeAuthority": "8LHDYjA1ckJtdh4RaStGLKKbwoGXrj3Hiszs3ao2aD2D",
+    "deploymentSlot": 509877942
+  }
+}

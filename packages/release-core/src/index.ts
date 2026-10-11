@@ -119,6 +119,7 @@ export type {
 export {
   buildApprove,
   buildCreateGuardedProposal,
+  buildCreateMultisig,
   buildExecute,
   buildReject,
   toCoreInstruction,
@@ -126,6 +127,7 @@ export {
 } from './squads/instructions';
 export type {
   CreateGuardedProposalParams,
+  CreateMultisigParams,
   ExecuteProposalParams,
   ProposalVoteParams,
 } from './squads/instructions';

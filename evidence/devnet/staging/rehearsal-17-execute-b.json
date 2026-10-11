@@ -1,0 +1,61 @@
+{
+  "command": "execute",
+  "timestamp": "2026-10-11T10:56:54.385Z",
+  "cluster": "devnet",
+  "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+  "inputs": {
+    "multisig": "8H85VCEgfEFL4doZ4WE2TobwsX1FX9cxCHMqi2Y89XDh",
+    "transactionIndex": 2,
+    "skipPreflight": false,
+    "computeUnitLimit": 119431
+  },
+  "addresses": {
+    "multisig": "8H85VCEgfEFL4doZ4WE2TobwsX1FX9cxCHMqi2Y89XDh",
+    "member": "VxGuX3ZiwcjjLeBRgbQcKAUiMfnDH99fD2WhDHUBNwk"
+  },
+  "signatures": [
+    "2ctD3GQZVgeFqLkXBcFqaM2PrcjDLzYB8kpAK3Pp6enUuXUGeHhXjiQ1tcv3esSebahKXyn32CpYqpPXwAhpGuvm"
+  ],
+  "slots": {
+    "executionSlot": 509879231
+  },
+  "outcome": "success",
+  "result": {
+    "signature": "2ctD3GQZVgeFqLkXBcFqaM2PrcjDLzYB8kpAK3Pp6enUuXUGeHhXjiQ1tcv3esSebahKXyn32CpYqpPXwAhpGuvm",
+    "slot": 509879231
+  },
+  "logs": [
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf invoke [1]",
+    "Program log: Instruction: VaultTransactionExecute",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 invoke [2]",
+    "Program log: Instruction: AssertAccountInfo",
+    "Program log: Result: ",
+    "Program log: BPFLoaderUpgradeab1e11111111111111111111111",
+    "Program log: ==",
+    "Program log: BPFLoaderUpgradeab1e11111111111111111111111",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 consumed 2082 of 88958 compute units",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 success",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 invoke [2]",
+    "Program log: Instruction: AssertAccountInfo",
+    "Program log: Result (Passed): Some(3093) == Some(3093)",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 consumed 2929 of 85566 compute units",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 success",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 invoke [2]",
+    "Program log: Instruction: AssertAccountInfo",
+    "Program log: Result (Passed): [195, 69, 199, 32, 81, 159, 38, 120, 5, 120, 198, 4, 252, 216, 237, 75, 127, 166, 51, 232, 99, 251, 42, 79, 195, 147, 131, 20, 108, 138, 53, 149] == [195, 69, 199, 32, 81, 159, 38, 120, 5, 120, 198, 4, 252, 216, 237, 75, 127, 166, 51, 232, 99, 251, 42, 79, 195, 147, 131, 20, 108, 138, 53, 149]",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 consumed 20579 of 81284 compute units",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 success",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 invoke [2]",
+    "Program log: Instruction: AssertUpgradeableLoaderAccount",
+    "Program log: Result (Passed): Some(509877942) == Some(509877942)",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 consumed 3554 of 59383 compute units",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 success",
+    "Program BPFLoaderUpgradeab1e11111111111111111111111 invoke [2]",
+    "Upgraded program HBQwLQNsKKeyDxRqH8HKRzTuKy5v4HJFcZ9T38wskono",
+    "Program BPFLoaderUpgradeab1e11111111111111111111111 success",
+    "Program SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf consumed 69431 of 119281 compute units",
+    "Program SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf success"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "id": "80e1f5c8c75414560b3e6eb2ef652d929107a8aec3f2bbec6493e72de2e16826",
+  "clusterId": "devnet",
+  "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+  "multisig": "8H85VCEgfEFL4doZ4WE2TobwsX1FX9cxCHMqi2Y89XDh",
+  "transactionIndex": "3",
+  "vault": "8LHDYjA1ckJtdh4RaStGLKKbwoGXrj3Hiszs3ao2aD2D",
+  "program": "HBQwLQNsKKeyDxRqH8HKRzTuKy5v4HJFcZ9T38wskono",
+  "programData": "3nhRkGHAxEYmZTrEgS1daEHX2346C5WpSHYQA87NcA35",
+  "artifactSha256": "1ee251d157d460e48e650990a411a7e6b9bb8181394a28bf6e76b1622356b458",
+  "artifactKeccak256": "6fb74b4347f26cb54c5c7cbdb42a2dfc84e1c8b6b5c827f08efa4f35dde1dd34",
+  "artifactLength": 3040,
+  "manifestSha256": "38d07222341df8ab090c605f0fb591d35f9b44ab12231c356ba2708ccea6290b",
+  "expectedDeploymentSlot": "509879231",
+  "execution": {
+    "slot": 509879425,
+    "observedOnly": false
+  },
+  "deployed": {
+    "slot": "509879425",
+    "upgradeAuthority": "8LHDYjA1ckJtdh4RaStGLKKbwoGXrj3Hiszs3ao2aD2D",
+    "payloadMatchesArtifact": true,
+    "trailingBytesAllZero": true,
+    "bufferClosed": true
+  },
+  "checks": [
+    {
+      "id": "deployment.slot",
+      "group": "deployment",
+      "status": "pass",
+      "blocking": true
+    },
+    {
+      "id": "programdata.authority",
+      "group": "deployment",
+      "status": "pass",
+      "blocking": true
+    },
+    {
+      "id": "buffer.bytes",
+      "group": "buffer",
+      "status": "pass",
+      "blocking": true
+    },
+    {
+      "id": "buffer.length",
+      "group": "buffer",
+      "status": "pass",
+      "blocking": true
+    },
+    {
+      "id": "buffer.state",
+      "group": "buffer",
+      "status": "pass",
+      "blocking": true
+    }
+  ],
+  "commitment": "confirmed",
+  "createdAt": "2026-10-11T10:58:37.738Z"
+}

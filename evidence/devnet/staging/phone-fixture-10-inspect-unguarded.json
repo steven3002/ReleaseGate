@@ -1,0 +1,235 @@
+{
+  "command": "inspect",
+  "timestamp": "2026-10-11T11:01:28.737Z",
+  "cluster": "devnet",
+  "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+  "inputs": {
+    "multisig": "HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR",
+    "transactionIndex": 2,
+    "manifestPath": "../../evidence/devnet/staging/phone-fixture-manifest-v2.json",
+    "artifactPath": "../../programs/release-demo/target/deploy/release_demo_v2.so"
+  },
+  "addresses": {
+    "multisig": "HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR",
+    "proposal": "HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR"
+  },
+  "signatures": [],
+  "slots": {
+    "contextSlot": 509880381
+  },
+  "outcome": "success",
+  "result": {
+    "shape": "unguarded-upgrade",
+    "artifactMatch": "matches",
+    "executionConditions": "absent",
+    "verdict": {
+      "artifactMatch": "matches",
+      "executionConditions": "absent",
+      "provenance": "recorded",
+      "checks": [
+        {
+          "id": "cluster.genesis",
+          "group": "identity",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "manifest.cluster",
+          "group": "identity",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "manifest.multisig",
+          "group": "identity",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "manifest.vault",
+          "group": "identity",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "manifest.program",
+          "group": "identity",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "program.account",
+          "group": "deployment",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "transaction.kind",
+          "group": "transaction",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "transaction.resolved",
+          "group": "transaction",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "transaction.supported",
+          "group": "transaction",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "guard.complete",
+          "group": "transaction",
+          "status": "fail",
+          "blocking": true,
+          "expected": "guarded-upgrade",
+          "actual": "unguarded-upgrade",
+          "detail": "Guard shape is unguarded-upgrade"
+        },
+        {
+          "id": "guard.length",
+          "group": "transaction",
+          "status": "unknown",
+          "blocking": true,
+          "detail": "Guard payload length or artifact length unavailable"
+        },
+        {
+          "id": "guard.hash",
+          "group": "transaction",
+          "status": "unknown",
+          "blocking": true,
+          "detail": "Guard hash or artifact Keccak-256 unavailable"
+        },
+        {
+          "id": "guard.slot",
+          "group": "transaction",
+          "status": "unknown",
+          "blocking": true,
+          "detail": "Guard deployment slot or manifest expected slot unavailable"
+        },
+        {
+          "id": "buffer.owner",
+          "group": "buffer",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "buffer.state",
+          "group": "buffer",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "buffer.authority",
+          "group": "buffer",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "buffer.length",
+          "group": "buffer",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "buffer.bytes",
+          "group": "buffer",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "programdata.state",
+          "group": "deployment",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "programdata.authority",
+          "group": "deployment",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "deployment.slot",
+          "group": "deployment",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "programdata.capacity",
+          "group": "deployment",
+          "status": "pass",
+          "blocking": false,
+          "expected": ">= 3056",
+          "actual": 4045
+        },
+        {
+          "id": "artifact.length",
+          "group": "artifact",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "artifact.sha256",
+          "group": "artifact",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "artifact.keccak256",
+          "group": "artifact",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "provenance.manifest",
+          "group": "provenance",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "provenance.source",
+          "group": "provenance",
+          "status": "pass",
+          "blocking": true
+        },
+        {
+          "id": "provenance.attestation",
+          "group": "provenance",
+          "status": "pass",
+          "blocking": true
+        }
+      ],
+      "actions": {
+        "approve": {
+          "allowed": false,
+          "reasons": [
+            "Execution conditions status is absent, must be verified",
+            "One or more blocking verification checks failed"
+          ]
+        },
+        "reject": {
+          "allowed": true,
+          "reasons": []
+        },
+        "execute": {
+          "allowed": false,
+          "reasons": [
+            "Proposal is Active, must be Approved to execute",
+            "Proposal is not in Approved status",
+            "Execution conditions status is absent, must be verified",
+            "One or more blocking verification checks failed"
+          ]
+        },
+        "createGuardedReplacement": {
+          "allowed": true,
+          "reasons": []
+        }
+      }
+    }
+  }
+}

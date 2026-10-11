@@ -1,0 +1,33 @@
+{
+  "command": "stage-multisig",
+  "timestamp": "2026-10-11T10:51:34.355Z",
+  "cluster": "devnet",
+  "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+  "inputs": {
+    "members": [
+      "VxGuX3ZiwcjjLeBRgbQcKAUiMfnDH99fD2WhDHUBNwk",
+      "B6PfdVKaFFxo9xRf6UFwnrBB8kotzL7StCVwNqarXSdf"
+    ],
+    "threshold": 2,
+    "timeLockSeconds": 0
+  },
+  "addresses": {
+    "multisig": "8H85VCEgfEFL4doZ4WE2TobwsX1FX9cxCHMqi2Y89XDh",
+    "vault": "8LHDYjA1ckJtdh4RaStGLKKbwoGXrj3Hiszs3ao2aD2D",
+    "createKey": "GbSgBji6biVDx5JAw2kZxSCWa2ZMtXyLaJPwGGZpwkWA",
+    "payer": "VxGuX3ZiwcjjLeBRgbQcKAUiMfnDH99fD2WhDHUBNwk"
+  },
+  "signatures": [
+    "3uYyjVW9AA9ELGiw27mEYKJyNNMKTi4kXGf8uEMd72vWFoc33izPvLCCy7bHojgojrsPpGU4FmZm7NDAWsHv6p6z"
+  ],
+  "slots": {
+    "executionSlot": 509877892
+  },
+  "outcome": "success",
+  "result": {
+    "multisig": "8H85VCEgfEFL4doZ4WE2TobwsX1FX9cxCHMqi2Y89XDh",
+    "vault": "8LHDYjA1ckJtdh4RaStGLKKbwoGXrj3Hiszs3ao2aD2D",
+    "threshold": 2,
+    "memberCount": 2
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "command": "buffer",
+  "timestamp": "2026-10-11T10:53:49.634Z",
+  "cluster": "devnet",
+  "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+  "inputs": {
+    "artifactPath": "../../programs/release-demo/target/deploy/release_demo_v1.so",
+    "multisig": "8H85VCEgfEFL4doZ4WE2TobwsX1FX9cxCHMqi2Y89XDh",
+    "vaultIndex": 0,
+    "payloadLength": 3040
+  },
+  "addresses": {
+    "buffer": "F9FxnQEQAerQTwTwMRskJL77sRQj8TAhBhKHEWYj1g56",
+    "authority": "8LHDYjA1ckJtdh4RaStGLKKbwoGXrj3Hiszs3ao2aD2D",
+    "loader": "BPFLoaderUpgradeab1e11111111111111111111111"
+  },
+  "signatures": [],
+  "slots": {},
+  "outcome": "success",
+  "result": {
+    "buffer": "F9FxnQEQAerQTwTwMRskJL77sRQj8TAhBhKHEWYj1g56",
+    "authority": "8LHDYjA1ckJtdh4RaStGLKKbwoGXrj3Hiszs3ao2aD2D",
+    "length": 3040,
+    "sha256": "1ee251d157d460e48e650990a411a7e6b9bb8181394a28bf6e76b1622356b458",
+    "keccak256": "6fb74b4347f26cb54c5c7cbdb42a2dfc84e1c8b6b5c827f08efa4f35dde1dd34"
+  }
+}

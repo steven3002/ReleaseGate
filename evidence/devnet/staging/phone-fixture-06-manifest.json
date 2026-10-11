@@ -1,0 +1,29 @@
+{
+  "command": "manifest",
+  "timestamp": "2026-10-11T11:00:53.473Z",
+  "cluster": "devnet",
+  "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+  "inputs": {
+    "artifactPath": "../../programs/release-demo/target/deploy/release_demo_v2.so",
+    "program": "DfYQBwP93gy5VTRZDqXjL36MAHRYz8po9kekxmSkaC6S",
+    "multisig": "HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR",
+    "vaultIndex": 0
+  },
+  "addresses": {
+    "program": "DfYQBwP93gy5VTRZDqXjL36MAHRYz8po9kekxmSkaC6S",
+    "programData": "7SGqgMaFhx5LhZrYjsWici8393PLxjmGqjPymQ4FVrJN",
+    "vault": "BmYcaND7hRez4HaFU48VQmdnf15rSZzCfpu813Ddbbro",
+    "multisig": "HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR"
+  },
+  "signatures": [],
+  "slots": {
+    "expectedDeploymentSlot": 509879837
+  },
+  "outcome": "success",
+  "result": {
+    "manifestSha256": "d04ca84065b377caed92e6a5b7ee35228dc21903f0c81a9d0678e821366ec5e4",
+    "artifactLength": 3056,
+    "artifactSha256": "fbf510dc134b92ec9e864e1ff06e8b4dd0a31957f65fded7003c2f7d2304f046",
+    "artifactKeccak256": "c345c720519f26780578c604fcd8ed4b7fa633e863fb2a4fc39383146c8a3595"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "command": "execute",
+  "timestamp": "2026-10-11T10:57:07.209Z",
+  "cluster": "devnet",
+  "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+  "inputs": {
+    "multisig": "8H85VCEgfEFL4doZ4WE2TobwsX1FX9cxCHMqi2Y89XDh",
+    "transactionIndex": 1,
+    "skipPreflight": true,
+    "computeUnitLimit": 300000
+  },
+  "addresses": {
+    "multisig": "8H85VCEgfEFL4doZ4WE2TobwsX1FX9cxCHMqi2Y89XDh",
+    "member": "VxGuX3ZiwcjjLeBRgbQcKAUiMfnDH99fD2WhDHUBNwk"
+  },
+  "signatures": [
+    "4nZ18bt2cHBtJfrQh91s33PrjCjiTaEsxVpHyNWZNb9wnAx3QjsQMNs26uk19i48denwsX65TedtK3yRAEMaKneu"
+  ],
+  "slots": {
+    "executionSlot": 509879284
+  },
+  "outcome": "failure",
+  "error": "{\"InstructionError\":[1,{\"Custom\":6001}]}",
+  "logs": [
+    "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+    "Program ComputeBudget111111111111111111111111111111 success",
+    "Program SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf invoke [1]",
+    "Program log: Instruction: VaultTransactionExecute",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 invoke [2]",
+    "Program log: Instruction: AssertAccountInfo",
+    "Program log: Result: ",
+    "Program log: BPFLoaderUpgradeab1e11111111111111111111111",
+    "Program log: ==",
+    "Program log: BPFLoaderUpgradeab1e11111111111111111111111",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 consumed 2082 of 269527 compute units",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 success",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 invoke [2]",
+    "Program log: Instruction: AssertAccountInfo",
+    "Program log: Result (Passed): Some(3077) == Some(3077)",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 consumed 2929 of 266135 compute units",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 success",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 invoke [2]",
+    "Program log: Instruction: AssertAccountInfo",
+    "Program log: Result (Passed): [111, 183, 75, 67, 71, 242, 108, 181, 76, 92, 124, 189, 180, 42, 45, 252, 132, 225, 200, 182, 181, 200, 39, 240, 142, 250, 79, 53, 221, 225, 221, 52] == [111, 183, 75, 67, 71, 242, 108, 181, 76, 92, 124, 189, 180, 42, 45, 252, 132, 225, 200, 182, 181, 200, 39, 240, 142, 250, 79, 53, 221, 225, 221, 52]",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 consumed 20707 of 261853 compute units",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 success",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 invoke [2]",
+    "Program log: Instruction: AssertUpgradeableLoaderAccount",
+    "Program log: Result (Failed): Some(509879231) == Some(509877942)",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 consumed 3586 of 239824 compute units",
+    "Program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 failed: custom program error: 0x1771",
+    "Program SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf consumed 63612 of 299850 compute units",
+    "Program SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf failed: custom program error: 0x1771"
+  ]
+}
