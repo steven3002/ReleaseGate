@@ -1,4 +1,5 @@
-import { Text, StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { Text, StyleSheet, TouchableOpacity } from 'react-native';
 import type { TextStyle } from 'react-native';
 
 export interface AddressTextProps {
@@ -14,20 +15,41 @@ export function AddressText({
   chars = 4,
   style,
 }: AddressTextProps) {
+  const [expanded, setExpanded] = useState<boolean>(!truncate);
+
   if (!address) {
     return <Text style={[styles.mono, style]}>—</Text>;
   }
 
+  const isLong = address.length > chars * 2 + 3;
   const displayText =
-    truncate && address.length > chars * 2 + 3
+    !expanded && truncate && isLong
       ? `${address.slice(0, chars)}...${address.slice(-chars)}`
       : address;
+
+  if (truncate && isLong) {
+    return (
+      <TouchableOpacity
+        onPress={() => setExpanded(prev => !prev)}
+        activeOpacity={0.7}
+      >
+        <Text
+          style={[styles.mono, style]}
+          numberOfLines={expanded ? undefined : 1}
+          ellipsizeMode={expanded ? undefined : 'middle'}
+          selectable={true}
+          accessibilityLabel={address}
+        >
+          {displayText}
+        </Text>
+      </TouchableOpacity>
+    );
+  }
 
   return (
     <Text
       style={[styles.mono, style]}
-      numberOfLines={1}
-      ellipsizeMode="middle"
+      selectable={true}
       accessibilityLabel={address}
     >
       {displayText}
@@ -42,3 +64,4 @@ const styles = StyleSheet.create({
     color: '#1f2937',
   },
 });
+

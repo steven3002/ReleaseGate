@@ -8,6 +8,9 @@ import {
   ReleaseImportScreen,
   ReleaseDetailScreen,
 } from '../features/release-import';
+import { ProposalReviewScreen } from '../features/proposal-review';
+import { CreateGuardedProposalScreen } from '../features/guarded-proposal';
+import { ReceiptScreen } from '../features/receipts';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -41,6 +44,21 @@ export function RootNavigator() {
         name="ReleaseDetail"
         component={ReleaseDetailScreen}
         options={{ title: 'Release Overview' }}
+      />
+      <Stack.Screen
+        name="ProposalReview"
+        component={ProposalReviewScreen}
+        options={{ title: 'Review Proposal' }}
+      />
+      <Stack.Screen
+        name="CreateGuardedProposal"
+        component={CreateGuardedProposalScreen}
+        options={{ title: 'Guarded Proposal' }}
+      />
+      <Stack.Screen
+        name="DeploymentReceipt"
+        component={ReceiptScreen}
+        options={{ title: 'Deployment Receipt' }}
       />
     </Stack.Navigator>
   );

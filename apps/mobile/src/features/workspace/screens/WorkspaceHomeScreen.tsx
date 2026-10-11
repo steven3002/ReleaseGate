@@ -219,9 +219,18 @@ export function WorkspaceHomeScreen() {
           title="Import Release"
           variant="primary"
           onPress={() => navigation.navigate('ReleaseImport')}
-          style={styles.importButton}
+          style={styles.rowActionButton}
           accessibilityLabel="Import Release button"
         />
+        {capabilities?.initiate ? (
+          <Button
+            title="New Guarded Proposal"
+            variant="secondary"
+            onPress={() => navigation.navigate('CreateGuardedProposal', {})}
+            style={styles.rowActionButton}
+            accessibilityLabel="New Guarded Proposal button"
+          />
+        ) : null}
       </View>
 
       {/* Proposals Section (Pass Mark 6) */}
@@ -246,24 +255,35 @@ export function WorkspaceHomeScreen() {
               : 'danger';
 
           return (
-            <Card key={item.proposal.transactionIndex.toString()}>
-              <View style={styles.proposalHeader}>
-                <Text style={styles.proposalIndex}>
-                  Proposal #{item.proposal.transactionIndex.toString()}
-                </Text>
-                <Badge label={statusKind} variant={statusVariant} />
-              </View>
-              <KeyValueRow
-                label="Approvals"
-                value={`${item.proposal.approved.length} of ${
-                  multisigSnapshot?.threshold ?? '?'
-                }`}
-              />
-              <KeyValueRow
-                label="Address"
-                value={<AddressText address={item.address} chars={6} />}
-              />
-            </Card>
+            <TouchableOpacity
+              key={item.proposal.transactionIndex.toString()}
+              activeOpacity={0.7}
+              onPress={() =>
+                navigation.navigate('ProposalReview', {
+                  proposalIndex: item.proposal.transactionIndex.toString(),
+                })
+              }
+              accessibilityLabel={`Proposal ${item.proposal.transactionIndex.toString()}`}
+            >
+              <Card>
+                <View style={styles.proposalHeader}>
+                  <Text style={styles.proposalIndex}>
+                    Proposal #{item.proposal.transactionIndex.toString()}
+                  </Text>
+                  <Badge label={statusKind} variant={statusVariant} />
+                </View>
+                <KeyValueRow
+                  label="Approvals"
+                  value={`${item.proposal.approved.length} of ${
+                    multisigSnapshot?.threshold ?? '?'
+                  }`}
+                />
+                <KeyValueRow
+                  label="Address"
+                  value={<AddressText address={item.address} chars={6} />}
+                />
+              </Card>
+            </TouchableOpacity>
           );
         })
       )}
@@ -376,8 +396,11 @@ const styles = StyleSheet.create({
   },
   actionRow: {
     marginVertical: 12,
+    flexDirection: 'row',
+    gap: 12,
   },
-  importButton: {
+  rowActionButton: {
+    flex: 1,
     minHeight: 48,
   },
   sectionHeaderRow: {

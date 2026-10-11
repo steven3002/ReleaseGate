@@ -4,8 +4,16 @@ export {
   saveCachedAuthorization,
   clearCachedAuthorization,
 } from './model/authorization-cache';
-export type {
-  WalletSigner,
-  WalletAuthorization,
-  WalletConnectResult,
+export {
+  verifySignedTransactionMessage,
+  verifyMemberSignature,
+  verifyAuthorizedMember,
+} from './model/verification';
+export {
+  WalletDeclinedError,
+  type WalletSigner,
+  type WalletAuthorization,
+  type WalletConnectResult,
+  type SubmissionResult,
+  type SignAndSubmitRequest,
 } from './types';

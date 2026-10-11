@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import * as FileSystem from 'expo-file-system/legacy';
 
 function sanitizeKey(key: string): string {
@@ -24,12 +25,21 @@ function jsonReplacer(_key: string, value: unknown): unknown {
   if (typeof value === 'bigint') {
     return { __type: 'bigint', value: value.toString() };
   }
+  if (value instanceof Uint8Array) {
+    return { __type: 'Uint8Array', hex: Buffer.from(value).toString('hex') };
+  }
   return value;
 }
 
 function jsonReviver(_key: string, value: unknown): unknown {
-  if (value && typeof value === 'object' && (value as Record<string, unknown>).__type === 'bigint') {
-    return BigInt((value as { value: string }).value);
+  if (value && typeof value === 'object') {
+    const obj = value as Record<string, unknown>;
+    if (obj.__type === 'bigint') {
+      return BigInt((obj as { value: string }).value);
+    }
+    if (obj.__type === 'Uint8Array') {
+      return new Uint8Array(Buffer.from((obj as { hex: string }).hex, 'hex'));
+    }
   }
   return value;
 }
