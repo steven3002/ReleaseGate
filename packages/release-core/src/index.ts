@@ -163,3 +163,88 @@ export type {
   ProposalSnapshot,
   ReadProposalInput,
 } from './inspection/read-proposal';
+
+// Verification
+export {
+  createFailCheck,
+  createNoticeCheck,
+  createPassCheck,
+  createUnknownCheck,
+} from './verification/check';
+export type {
+  CheckGroup,
+  CheckId,
+  CheckResult,
+  CheckStatus,
+} from './verification/check';
+export { runIdentityChecks } from './verification/identity-checks';
+export type { IdentityCheckInput } from './verification/identity-checks';
+export { runTransactionChecks } from './verification/transaction-checks';
+export type { TransactionCheckInput } from './verification/transaction-checks';
+export { runBufferChecks } from './verification/buffer-checks';
+export type { BufferCheckInput } from './verification/buffer-checks';
+export { runDeploymentChecks } from './verification/deployment-checks';
+export type { DeploymentCheckInput } from './verification/deployment-checks';
+export { runArtifactChecks } from './verification/artifact-checks';
+export type { ArtifactCheckInput } from './verification/artifact-checks';
+export { runProvenanceChecks } from './verification/provenance-checks';
+export type { ProvenanceCheckInput } from './verification/provenance-checks';
+export { verify } from './verification/verify';
+export type {
+  Attestation,
+  ImportedRelease,
+  ImportSource,
+  ReviewedArtifact,
+  VerificationInput,
+  VerificationWorkspace,
+} from './verification/verify';
+
+// Policy
+export type {
+  ActionDecision,
+  ArtifactMatchStatus,
+  BoundToTarget,
+  ExecutionConditionsStatus,
+  PermittedActions,
+  ProvenanceStatus,
+  ReviewVerdict,
+} from './policy/verdict';
+export {
+  evaluateTimeLock,
+  hasMemberApproved,
+  hasMemberRejected,
+  hasPermission,
+  isProposalActive,
+  isProposalApproved,
+  isProposalStale,
+} from './policy/governance';
+export type { TimeLockEvaluation } from './policy/governance';
+export { evaluate } from './policy/evaluate';
+export type { PolicyInput } from './policy/evaluate';
+
+// Receipt
+export type {
+  DeployedStateSummary,
+  DeploymentReceipt,
+  ReceiptExecutionInfo,
+} from './receipt/receipt';
+export { readDeploymentState } from './receipt/read-deployment';
+export type {
+  DeploymentState,
+  ReadDeploymentInput,
+} from './receipt/read-deployment';
+export { reconcileDeployment } from './receipt/reconcile';
+export type { ReconcileDeploymentInput } from './receipt/reconcile';
+
+// Settlement
+export type {
+  Operation,
+  OperationKind,
+  OperationPhase,
+} from './settlement/operation';
+export { checkOperationEffect } from './settlement/effects';
+export type { EffectCheckInput } from './settlement/effects';
+export { observeOperation } from './settlement/observe';
+export type { OperationObservation } from './settlement/observe';
+export { settle } from './settlement/settle';
+

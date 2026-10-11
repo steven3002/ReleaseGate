@@ -22,10 +22,21 @@ import {
   decodeProposalAccount,
   encodeLighthouseAssertion,
   encodeUpgradeInstruction,
+  evaluate,
+  getClusterDescriptor,
+  getMemberCapabilities,
+  keccak256,
   LOADER_V3_PROGRAM_ID,
+  MANIFEST_SCHEMA_V1,
+  parsePermissions,
+  readDeploymentState,
+  readProposal,
+  reconcileDeployment,
+  sha256,
   SYSVAR_CLOCK_ID,
   SYSVAR_RENT_ID,
   toWeb3Instruction,
+  verify,
 } from '../../packages/release-core/src/index.js';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
@@ -104,10 +115,79 @@ async function runLifecycleForBuild(variant) {
     return result;
   }
 
+  const bytecode = readFileSync(path.join(root, 'lighthouse-onchain.so'));
+  const codeSha256 = sha256(bytecode);
+  const codeKeccak = keccak256(bytecode);
+
+  const cluster = getClusterDescriptor('devnet');
+
+  const reviewedArtifact = {
+    sha256: codeSha256,
+    keccak256: codeKeccak,
+    length: bytecode.length,
+    bytes: new Uint8Array(bytecode),
+  };
+
+  const releaseManifest = {
+    schema: MANIFEST_SCHEMA_V1,
+    release: {
+      name: 'lighthouse',
+      version: '1.0.0',
+    },
+    cluster: {
+      name: 'devnet',
+      genesisHash: cluster.genesisHash,
+    },
+    multisig: multisigPda.toBase58(),
+    vaultIndex: 0,
+    vault: vaultPda.toBase58(),
+    program: program.toBase58(),
+    expectedDeploymentSlot: 0n,
+    artifact: {
+      fileName: 'lighthouse-onchain.so',
+      sha256: codeSha256,
+      keccak256: codeKeccak,
+      length: bytecode.length,
+    },
+    provenance: {
+      sourceRepository: 'https://github.com/solana-program/lighthouse',
+      commit: '0123456789abcdef0123456789abcdef01234567',
+      buildMethod: 'solana-verify',
+      builder: 'docker',
+      builtAt: '2026-10-10T00:00:00Z',
+    },
+  };
+
+  const releaseObj = {
+    id: 'rel-local',
+    manifest: releaseManifest,
+    manifestSha256: sha256(
+      new TextEncoder().encode(
+        JSON.stringify(releaseManifest, (_, v) => (typeof v === 'bigint' ? Number(v) : v))
+      )
+    ),
+    artifact: reviewedArtifact,
+    artifactSource: {
+      channel: 'file-picker',
+      size: bytecode.length,
+      importedAt: new Date().toISOString(),
+    },
+    manifestSource: {
+      channel: 'file-picker',
+      size: 100,
+      importedAt: new Date().toISOString(),
+    },
+    attestation: {
+      statementVersion: '1.0.0',
+      confirmedAt: new Date().toISOString(),
+    },
+  };
+
+  let currentSlot = 100;
   // ChainReader adapter over svm_server.py account endpoint for core builders
   const chain = {
-    getGenesisHash: async () => 'local-genesis',
-    getBlockHeight: async () => 100,
+    getGenesisHash: async () => cluster.genesisHash,
+    getBlockHeight: async () => currentSlot,
     getSignatureStatus: async () => null,
     getTransactionOutcome: async () => null,
     getAccounts: async (addresses) => {
@@ -124,9 +204,94 @@ async function runLifecycleForBuild(variant) {
           };
         }),
       );
-      return { contextSlot: 100, accounts };
+      return { contextSlot: currentSlot, accounts };
     },
   };
+
+  async function assertProposalJudgment(txIndex, {
+    expectedStatusKind,
+    expectedGuardShape,
+    expectedArtifactMatch,
+    expectedExecutionConditions,
+    expectedCanApprove,
+    expectedCanExecute,
+    customRelease = releaseObj,
+  }) {
+    const inspection = await readProposal(chain, {
+      multisig: multisigPda.toBase58(),
+      transactionIndex: BigInt(txIndex),
+    });
+
+    if (expectedStatusKind && inspection.proposal.status.kind !== expectedStatusKind) {
+      throw new Error(
+        `Proposal ${txIndex} status mismatch: expected ${expectedStatusKind}, got ${inspection.proposal.status.kind}`
+      );
+    }
+
+    if (expectedGuardShape && inspection.guard.shape !== expectedGuardShape) {
+      throw new Error(
+        `Proposal ${txIndex} guard shape mismatch: expected ${expectedGuardShape}, got ${inspection.guard.shape}`
+      );
+    }
+
+    const checks = verify({
+      workspace: {
+        clusterId: cluster.id,
+        multisig: multisigPda.toBase58(),
+        rpcGenesisHash: cluster.genesisHash,
+      },
+      multisig: inspection.multisig,
+      proposal: inspection.proposal,
+      storedTransaction: inspection.transaction,
+      guardAssessment: inspection.guard,
+      classifiedInstructions: inspection.instructions,
+      chainEvidence: inspection.evidence,
+      release: customRelease,
+    });
+
+    const payerCapabilities = getMemberCapabilities(
+      inspection.multisig.members,
+      payer.publicKey.toBase58()
+    );
+    const verdict = evaluate({
+      checks,
+      shape: inspection.guard.shape,
+      cluster,
+      multisig: inspection.multisig,
+      proposal: inspection.proposal,
+      memberAddress: payer.publicKey.toBase58(),
+      memberCapabilities: payerCapabilities,
+      currentTimeSeconds: 1000,
+      hasReviewedArtifact: true,
+    });
+
+    if (expectedArtifactMatch && verdict.artifactMatch !== expectedArtifactMatch) {
+      throw new Error(
+        `Proposal ${txIndex} artifactMatch mismatch: expected ${expectedArtifactMatch}, got ${verdict.artifactMatch}`
+      );
+    }
+
+    if (expectedExecutionConditions && verdict.executionConditions !== expectedExecutionConditions) {
+      throw new Error(
+        `Proposal ${txIndex} executionConditions mismatch: expected ${expectedExecutionConditions}, got ${verdict.executionConditions}`
+      );
+    }
+
+    if (expectedCanApprove !== undefined && verdict.actions.approve.allowed !== expectedCanApprove) {
+      const failing = checks.filter((c) => c.status !== 'pass').map((c) => `${c.id}:${c.status}(${c.reason})`);
+      throw new Error(
+        `Proposal ${txIndex} canApprove mismatch: expected ${expectedCanApprove}, got ${verdict.actions.approve.allowed} (${verdict.actions.approve.reasons.join('; ')}). Failing checks: ${failing.join(', ')}`
+      );
+    }
+
+    if (expectedCanExecute !== undefined && verdict.actions.execute.allowed !== expectedCanExecute) {
+      throw new Error(
+        `Proposal ${txIndex} canExecute mismatch: expected ${expectedCanExecute}, got ${verdict.actions.execute.allowed} (${verdict.actions.execute.reasons.join('; ')})`
+      );
+    }
+
+    return { inspection, checks, verdict };
+  }
 
   try {
     // 1. Create 2-of-2 multisig
@@ -228,6 +393,18 @@ async function runLifecycleForBuild(variant) {
       });
       await send(`create_proposal_${index}`, createIxs);
 
+      if (index === 1) {
+        // Snapshot: right after proposal 1 creation
+        await assertProposalJudgment(1, {
+          expectedStatusKind: 'Active',
+          expectedGuardShape: 'guarded-upgrade',
+          expectedArtifactMatch: 'matches',
+          expectedExecutionConditions: 'verified',
+          expectedCanApprove: true,
+          expectedCanExecute: false,
+        });
+      }
+
       // Step: first approval via buildApprove
       const app1Ix = buildApprove({
         multisig: multisigPda.toBase58(),
@@ -237,6 +414,15 @@ async function runLifecycleForBuild(variant) {
       await send(`first_approval_${index}`, [app1Ix]);
 
       if (index === 1) {
+        // Snapshot: after proposal 1 first approval
+        await assertProposalJudgment(1, {
+          expectedStatusKind: 'Active',
+          expectedGuardShape: 'guarded-upgrade',
+          expectedArtifactMatch: 'matches',
+          expectedExecutionConditions: 'verified',
+          expectedCanApprove: false, // payer already voted
+          expectedCanExecute: false, // threshold 2 not met
+        });
         // Step 4: premature execution before 2nd approval must fail
         await executeWithCore(1, 'execution_before_second_approval', false);
       }
@@ -248,16 +434,187 @@ async function runLifecycleForBuild(variant) {
         member: second.publicKey.toBase58(),
       });
       await send(`second_approval_${index}`, [app2Ix], [payer, second]);
+
+      if (index === 1) {
+        await assertProposalJudgment(1, {
+          expectedStatusKind: 'Approved',
+          expectedGuardShape: 'guarded-upgrade',
+          expectedArtifactMatch: 'matches',
+          expectedExecutionConditions: 'verified',
+          expectedCanApprove: false,
+          expectedCanExecute: true,
+        });
+      } else if (index === 2) {
+        const { verdict: v2 } = await assertProposalJudgment(2, {
+          expectedStatusKind: 'Approved',
+          expectedGuardShape: 'partial-guard',
+          expectedArtifactMatch: 'matches',
+          expectedExecutionConditions: 'incomplete',
+          expectedCanExecute: false, // Incomplete guard blocks execution!
+        });
+        if (!v2.actions.createGuardedReplacement.allowed) {
+          throw new Error('Expected createGuardedReplacement to be allowed for partial-guard proposal 2');
+        }
+      } else if (index === 3) {
+        await assertProposalJudgment(3, {
+          expectedStatusKind: 'Approved',
+          expectedGuardShape: 'guarded-upgrade',
+          expectedArtifactMatch: 'matches',
+          expectedExecutionConditions: 'verified',
+          expectedCanExecute: true,
+        });
+
+        // Test one-byte mutated artifact giving 'mismatch' (Pass Mark 5)
+        const mutatedRelease = {
+          ...releaseObj,
+          artifact: {
+            ...releaseObj.artifact,
+            sha256: '0'.repeat(64),
+          },
+        };
+        await assertProposalJudgment(3, {
+          expectedArtifactMatch: 'mismatch',
+          customRelease: mutatedRelease,
+        });
+      }
     }
 
     // Step 12: execute proposal 3 (newer release)
     const newer = await executeWithCore(3, 'execute_newer_proposal_first');
 
+    // Reconcile deployment receipt on proposal 3 (Pass Mark 6)
+    const depState = await readDeploymentState({
+      chain,
+      program: program.toBase58(),
+      bufferAddress: bufferB.toBase58(),
+    });
+    const receipt = reconcileDeployment({
+      clusterId: cluster.id,
+      genesisHash: cluster.genesisHash,
+      multisig: multisigPda.toBase58(),
+      transactionIndex: 3n,
+      vault: vaultPda.toBase58(),
+      program: program.toBase58(),
+      expectedDeploymentSlot: 0n,
+      artifactSha256: codeSha256,
+      artifactKeccak256: codeKeccak,
+      artifactLength: bytecode.length,
+      artifactBytes: new Uint8Array(bytecode),
+      manifestSha256: releaseObj.manifestSha256,
+      deploymentState: depState,
+      createdAt: new Date().toISOString(),
+    });
+
+    if (
+      receipt.deployed.slot !== 100n ||
+      receipt.deployed.upgradeAuthority !== vaultPda.toBase58() ||
+      !receipt.deployed.bufferClosed ||
+      !receipt.deployed.payloadMatchesArtifact ||
+      !receipt.deployed.trailingBytesAllZero ||
+      !receipt.checks.every((c) => c.status === 'pass')
+    ) {
+      throw new Error(`Receipt verification failed on proposal 3`);
+    }
+
+    // Receipt failure cases per Pass Mark 6:
+    // 1. Wrong payload
+    const wrongBytes = new Uint8Array(bytecode);
+    wrongBytes[0] ^= 0xff;
+    const receiptWrongPayload = reconcileDeployment({
+      clusterId: cluster.id,
+      genesisHash: cluster.genesisHash,
+      multisig: multisigPda.toBase58(),
+      transactionIndex: 3n,
+      vault: vaultPda.toBase58(),
+      program: program.toBase58(),
+      expectedDeploymentSlot: 0n,
+      artifactSha256: 'f'.repeat(64),
+      artifactKeccak256: codeKeccak,
+      artifactLength: bytecode.length,
+      artifactBytes: wrongBytes,
+      manifestSha256: releaseObj.manifestSha256,
+      deploymentState: depState,
+      createdAt: new Date().toISOString(),
+    });
+    if (receiptWrongPayload.deployed.payloadMatchesArtifact !== false) {
+      throw new Error('Expected wrong payload to fail receipt check');
+    }
+
+    // 2. Wrong authority
+    const receiptWrongAuthority = reconcileDeployment({
+      clusterId: cluster.id,
+      genesisHash: cluster.genesisHash,
+      multisig: multisigPda.toBase58(),
+      transactionIndex: 3n,
+      vault: payer.publicKey.toBase58(),
+      program: program.toBase58(),
+      expectedDeploymentSlot: 0n,
+      artifactSha256: codeSha256,
+      artifactKeccak256: codeKeccak,
+      artifactLength: bytecode.length,
+      artifactBytes: new Uint8Array(bytecode),
+      manifestSha256: releaseObj.manifestSha256,
+      deploymentState: depState,
+      createdAt: new Date().toISOString(),
+    });
+    if (receiptWrongAuthority.checks.find((c) => c.id === 'programdata.authority')?.status !== 'fail') {
+      throw new Error('Expected wrong authority to fail receipt check');
+    }
+
+    // 3. Buffer still existing
+    const receiptBufferNotClosed = reconcileDeployment({
+      clusterId: cluster.id,
+      genesisHash: cluster.genesisHash,
+      multisig: multisigPda.toBase58(),
+      transactionIndex: 3n,
+      vault: vaultPda.toBase58(),
+      program: program.toBase58(),
+      expectedDeploymentSlot: 0n,
+      artifactSha256: codeSha256,
+      artifactKeccak256: codeKeccak,
+      artifactLength: bytecode.length,
+      artifactBytes: new Uint8Array(bytecode),
+      manifestSha256: releaseObj.manifestSha256,
+      deploymentState: {
+        ...depState,
+        bufferAccount: {
+          address: bufferB.toBase58(),
+          lamports: 1000000n,
+          owner: LOADER_V3_PROGRAM_ID,
+          data: new Uint8Array([1, 0, 0, 0]),
+          executable: false,
+        },
+      },
+      createdAt: new Date().toISOString(),
+    });
+    if (receiptBufferNotClosed.deployed.bufferClosed !== false) {
+      throw new Error('Expected unclosed buffer to fail receipt check');
+    }
+
+    // Assert proposal 1 status after proposal 3 execution: not-holding, execute disallowed (Pass Mark 5)
+    await assertProposalJudgment(1, {
+      expectedStatusKind: 'Approved',
+      expectedGuardShape: 'guarded-upgrade',
+      expectedArtifactMatch: 'matches',
+      expectedExecutionConditions: 'not-holding',
+      expectedCanExecute: false,
+    });
+
     // Warp to slot 200
     await call({ op: 'warp', slot: 200 });
+    currentSlot = 200;
 
     // Step 13: execute proposal 1 (older release with slot guard) -> blocked!
     const blocked = await executeWithCore(1, 'older_proposal_with_previous_slot_guard', false);
+
+    // Verify core verdict for proposal 1 continues to report not-holding and execute disallowed
+    await assertProposalJudgment(1, {
+      expectedStatusKind: 'Approved',
+      expectedGuardShape: 'guarded-upgrade',
+      expectedArtifactMatch: 'matches',
+      expectedExecutionConditions: 'not-holding',
+      expectedCanExecute: false,
+    });
 
     // Verify proposal 1 account status remains 'Approved'
     const p1AccountRaw = await call({
@@ -271,6 +628,14 @@ async function runLifecycleForBuild(variant) {
 
     // Step 14: execute proposal 2 (older release without slot guard) -> accepted!
     const accepted = await executeWithCore(2, 'older_proposal_without_previous_slot_guard', true);
+
+    const p2Final = await readProposal(chain, {
+      multisig: multisigPda.toBase58(),
+      transactionIndex: 2n,
+    });
+    if (p2Final.proposal.status.kind !== 'Executed') {
+      throw new Error(`Expected proposal 2 to be Executed, got ${p2Final.proposal.status.kind}`);
+    }
 
     const isAllExpected =
       events.length === 14 &&
@@ -300,7 +665,7 @@ async function main() {
   if (target === 'both' || target === 'devnet') {
     await runLifecycleForBuild('devnet');
   }
-  console.log('\n[PASS MARK 8 MET]: 14-step local lifecycle verified for both Squads builds via release-core builders.');
+  console.log('\n[PASS MARK 9 MET]: 14-step local lifecycle verified for both Squads builds with core reader, verification, verdict, and receipt assertions.');
 }
 
 main().catch((err) => {

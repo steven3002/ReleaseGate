@@ -79,10 +79,17 @@ export class Web3ChainReader implements ChainReader {
     return snapshot;
   }
 
-  async getTransactionOutcome(signature: string): Promise<TransactionOutcome | null> {
-    const res = await this.connection.getTransaction(signature, {
+  async getTransactionOutcome(
+    signature: string,
+    commitment?: ChainCommitment
+  ): Promise<TransactionOutcome | null> {
+    const config: Parameters<Connection['getTransaction']>[1] = {
       maxSupportedTransactionVersion: 0,
-    });
+    };
+    if (commitment) {
+      config.commitment = commitment === 'processed' ? 'confirmed' : commitment;
+    }
+    const res = await this.connection.getTransaction(signature, config);
     if (!res) {
       return null;
     }

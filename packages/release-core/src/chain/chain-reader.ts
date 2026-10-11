@@ -35,5 +35,8 @@ export interface ChainReader {
   ): Promise<{ contextSlot: number; accounts: (AccountSnapshot | null)[] }>;
   getBlockHeight(commitment?: ChainCommitment): Promise<number>;
   getSignatureStatus(signature: string): Promise<SignatureStatusSnapshot | null>;
-  getTransactionOutcome(signature: string): Promise<TransactionOutcome | null>;
+  getTransactionOutcome(
+    signature: string,
+    commitment?: ChainCommitment
+  ): Promise<TransactionOutcome | null>;
 }
