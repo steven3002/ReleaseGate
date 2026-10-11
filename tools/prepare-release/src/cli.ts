@@ -1,0 +1,54 @@
+import process from 'node:process';
+
+type CommandHandler = (args: readonly string[]) => Promise<number>;
+
+interface Command {
+  readonly name: string;
+  readonly summary: string;
+  readonly handler?: CommandHandler;
+}
+
+const EXIT_OK = 0;
+const EXIT_FAILED = 1;
+const EXIT_USAGE = 2;
+
+const COMMANDS: readonly Command[] = [
+  { name: 'manifest', summary: 'Hash an artifact and write its release manifest.' },
+  { name: 'buffer', summary: 'Upload an artifact to a buffer, hand it to the vault and verify it.' },
+  { name: 'stage-multisig', summary: 'Create a devnet multisig.' },
+  { name: 'stage-program', summary: 'Deploy the test program and hand its upgrade authority to the vault.' },
+  { name: 'propose', summary: 'Create a guarded proposal or one of its controlled counterparts.' },
+  { name: 'inspect', summary: 'Read a proposal and print its verification result and verdict.' },
+  { name: 'vote', summary: 'Approve or reject a proposal as a local-key member.' },
+  { name: 'execute', summary: 'Execute an approved proposal as a local-key member.' },
+  { name: 'receipt', summary: 'Reconcile a deployment and write its receipt.' },
+  { name: 'probe', summary: 'Call the test program and print its observable behaviour.' },
+];
+
+const HELP_FLAGS: ReadonlySet<string> = new Set(['help', '--help', '-h']);
+
+function usage(): string {
+  const width = Math.max(...COMMANDS.map((command) => command.name.length));
+  const rows = COMMANDS.map((command) => `  ${command.name.padEnd(width)}  ${command.summary}`);
+  return ['Usage: prepare-release <command> [options]', '', 'Commands:', ...rows, ''].join('\n');
+}
+
+async function main(argv: readonly string[]): Promise<number> {
+  const [name, ...args] = argv;
+  if (name === undefined || HELP_FLAGS.has(name)) {
+    process.stdout.write(usage());
+    return EXIT_OK;
+  }
+  const command = COMMANDS.find((candidate) => candidate.name === name);
+  if (command === undefined) {
+    process.stderr.write(`prepare-release: unknown command "${name}"\n\n${usage()}`);
+    return EXIT_USAGE;
+  }
+  if (command.handler === undefined) {
+    process.stderr.write(`prepare-release: "${command.name}" is not available in this build\n`);
+    return EXIT_FAILED;
+  }
+  return command.handler(args);
+}
+
+process.exitCode = await main(process.argv.slice(2));
