@@ -1,0 +1,58 @@
+{
+  "retrieved_utc": "2026-10-09T20:37:58.964349+00:00",
+  "program": "L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95",
+  "feature": "H5AgGhTzvHp2GH9SVGZYBpjeQPy1V9bqYQ4MmTtiCWr9",
+  "snapshots": [
+    {
+      "endpoint": "https://api.mainnet-beta.solana.com",
+      "result": {
+        "context": {
+          "apiVersion": "4.3.0",
+          "slot": 454993993
+        },
+        "value": [
+          {
+            "data": [
+              "AgAAAKfQhdF3y8LdCqmIohyrwCmpSVS2dztn+dlPJgoMhnZr",
+              "base64"
+            ],
+            "executable": true,
+            "lamports": 2665447,
+            "owner": "BPFLoaderUpgradeab1e11111111111111111111111",
+            "rentEpoch": 18446744073709551615,
+            "space": 36
+          },
+          null
+        ]
+      }
+    },
+    {
+      "endpoint": "https://solana-rpc.publicnode.com",
+      "error": "HTTP Error 403: Forbidden"
+    }
+  ],
+  "programdata_snapshot": {
+    "context": {
+      "apiVersion": "4.3.0",
+      "slot": 454994007
+    },
+    "value": {
+      "data": {
+        "omitted_programdata_base64": true,
+        "whole_account_sha256": "94aee62cffe609a6a676b0b71281c49f1aa7ed3f388bae7dcb88d3b8ca412f9a",
+        "header_hex": "03000000ddd1881100000000004efc1d026595ca558dbdbf1c03a60eb9532312018522c5efa09cf588599468a7",
+        "account_data_bytes": 424293
+      },
+      "executable": false,
+      "lamports": 2953970160,
+      "owner": "BPFLoaderUpgradeab1e11111111111111111111111",
+      "rentEpoch": 18446744073709551615,
+      "space": 424293
+    }
+  },
+  "programdata_key": "CJ5WEjifs4d77pEA9DpewppByFjHcAkNv3YYSuSoDk7c",
+  "bytecode_sha256": "a89179ae024ac36aa5fc308251caa84cd0a3390ae66d8523514004a86d5148bb",
+  "bytecode_bytes": 424248,
+  "deployment_slot": 294179293,
+  "scope_note": "Captured public metadata/config retained. ProgramData binary omitted; reproduce with read-only fetch and pinned expected ELF hash."
+}

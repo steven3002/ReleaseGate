@@ -1,0 +1,60 @@
+{
+  "retrieved_utc": "2026-10-09T20:52:04.329125+00:00",
+  "endpoint": "https://api.mainnet-beta.solana.com",
+  "program": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf",
+  "config": "BSTq9w3kZwNwpBXJEvTZz2G9ZTNyKBvoSeXMvwb4cNZr",
+  "snapshot": {
+    "context": {
+      "apiVersion": "4.3.0",
+      "slot": 454997830
+    },
+    "value": [
+      {
+        "data": [
+          "AgAAAN5fA80UTvlZeDAEQujVsh/36bXCtTG7b/FG999tVB3T",
+          "base64"
+        ],
+        "executable": true,
+        "lamports": 12171440,
+        "owner": "BPFLoaderUpgradeab1e11111111111111111111111",
+        "rentEpoch": 18446744073709551615,
+        "space": 36
+      },
+      {
+        "data": [
+          "xNJa55CVjD92Raz2HiWPdZHPcd7iP2i7V0ot8H6/wFdsT5Tc2zbKegAAAAAAAAAAPpPXMsRIJCeQ0tu1MaQKvRnxbFXjEyz/UnetydaTq1oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "base64"
+        ],
+        "executable": false,
+        "lamports": 1893120,
+        "owner": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf",
+        "rentEpoch": 18446744073709551615,
+        "space": 144
+      }
+    ]
+  },
+  "programdata": "Fy3YMJCvwbAXUgUM5b91ucUVA3jYzwWLHL3MwBqKsh8n",
+  "programdata_snapshot": {
+    "context": {
+      "apiVersion": "4.3.0",
+      "slot": 454997855
+    },
+    "value": {
+      "data": {
+        "omitted_programdata_base64": true,
+        "whole_account_sha256": "e1c596fdcf397686dfa67cc568c8c2e4696a1ef6949de4c2d251527913af7f1e",
+        "header_hex": "03000000dc090912000000000025c0a7490bf610fe6ad8090d6b7fe80b2856c3ad6175690a20e0981607ce2165",
+        "account_data_bytes": 1470461
+      },
+      "executable": false,
+      "lamports": 10236299440,
+      "owner": "BPFLoaderUpgradeab1e11111111111111111111111",
+      "rentEpoch": 18446744073709551615,
+      "space": 1470461
+    }
+  },
+  "bytecode_sha256": "dec8d3e0fae58c7c8f2416e5f67c25e673f047afd6dd2bba4a47e0b29a01d34c",
+  "bytecode_bytes": 1470416,
+  "authority_option": 0,
+  "scope_note": "Captured public metadata/config retained. ProgramData binary omitted; reproduce with read-only fetch and pinned expected ELF hash."
+}

@@ -1,0 +1,10 @@
+export const LOADER_STATE_UNINITIALIZED = 0;
+export const LOADER_STATE_BUFFER = 1;
+export const LOADER_STATE_PROGRAM = 2;
+export const LOADER_STATE_PROGRAM_DATA = 3;
+
+export const LOADER_INSTRUCTION_UPGRADE = 3;
+
+export const BUFFER_HEADER_SIZE = 37;
+export const PROGRAM_HEADER_SIZE = 36;
+export const PROGRAMDATA_HEADER_SIZE = 45;
