@@ -1,0 +1,50 @@
+ReleaseGate
+Copyright 2026 The ReleaseGate Authors
+
+This product includes software developed by The ReleaseGate Project.
+
+========================================================================
+Third-Party Software and Licenses
+========================================================================
+
+The following third-party components and libraries may be included or bundled
+in source or binary distributions of ReleaseGate:
+
+1. Solana Web3.js (@solana/web3.js)
+   License: MIT
+   Copyright (c) 2018-2024 Solana Labs, Inc.
+
+2. Squads Protocol Multisig SDK (@sqds/multisig)
+   License: MIT
+   Copyright (c) 2023 Squads Labs
+
+3. Noble Cryptographic Primitives (@noble/hashes, @noble/curves)
+   License: MIT
+   Copyright (c) 2021-2024 Paul Miller (https://paulmillr.com)
+
+4. Solana Mobile Wallet Adapter (@solana-mobile/mobile-wallet-adapter-protocol,
+   @solana-mobile/mobile-wallet-adapter-protocol-web3js)
+   License: Apache-2.0
+   Copyright 2022-2024 Solana Mobile Inc.
+
+5. React Native & React
+   License: MIT
+   Copyright (c) Meta Platforms, Inc. and affiliates.
+
+6. Expo SDK
+   License: MIT
+   Copyright (c) 2015-present 650 Industries, Inc. (Expo)
+
+7. Lighthouse Program (on-chain bytecode reference)
+   License: Apache-2.0
+   Copyright (c) 2024 Jac0xb
+
+8. rpc-websockets (transitive dependency via @solana/web3.js)
+   License: LGPL-3.0-only
+   Copyright (c) 2017-2023 Elph, Inc.
+   Notice: Included dynamically as part of the bundled web3 client.
+   Source code for rpc-websockets is available at https://github.com/elph/rpc-websockets
+
+9. text-encoding-utf-8 (transitive dependency)
+   License: Public Domain / CC0
+   Copyright (c) 2014 Sam Thorogood
