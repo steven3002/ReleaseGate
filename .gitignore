@@ -52,3 +52,6 @@ evidence/local-validation/__pycache__/
 evidence/local-validation/*squads-rpc-evidence*.json
 evidence/local-validation/*-results.json
 
+
+# Android packages are distributed as release assets
+*.apk

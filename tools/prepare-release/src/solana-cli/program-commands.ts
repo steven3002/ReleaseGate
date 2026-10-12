@@ -7,7 +7,7 @@ function getSolanaCliPath(): string {
   if (process.env.RG_SOLANA_BIN) {
     return `${process.env.RG_SOLANA_BIN}/solana`;
   }
-  return '/home/azureuser/.local/share/solana/install/active_release/bin/solana';
+  return 'solana';
 }
 
 export interface CliCommandResult {
