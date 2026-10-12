@@ -9,7 +9,7 @@ This guide provides step-by-step instructions for running and validating the sig
 - **Device:** Android physical smartphone (`arm64-v8a`, Android 10+ / API 29+; e.g. Samsung Galaxy S21 5G).
 - **Wallet App:** Production mobile wallet supporting Mobile Wallet Adapter (MWA) and Solana Devnet (e.g. Phantom for Android).
 - **Network:** Connected to internet with access to Solana Devnet RPC (`https://api.devnet.solana.com`).
-- **Release APK:** Signed standalone APK at `apps/mobile/android/app/build/outputs/apk/release/app-release.apk` (SHA-256: `8817477b1fe4e4f9d85b8602b3cfdc901cb0bbfecb6c47c44f93f10c077b3b09`).
+- **Release APK:** `app-release.apk` from the [v0.1.0 release](https://github.com/steven3002/ReleaseGate/releases/tag/v0.1.0) (SHA-256: `6878d83725a04a44936f1ce0ba8fbc02d8af1d3397ce6aa0a07002df5ef0a393`), or built locally at `apps/mobile/android/app/build/outputs/apk/release/app-release.apk`.
 
 ---
 
@@ -18,7 +18,7 @@ This guide provides step-by-step instructions for running and validating the sig
 ### Option A: Via USB / ADB
 With your phone connected to your workstation with USB debugging enabled:
 ```bash
-adb install -r "apps/mobile/android/app/build/outputs/apk/release/app-release.apk"
+adb install -r app-release.apk
 ```
 
 ### Option B: Direct Download / Local Transfer
@@ -65,9 +65,11 @@ adb push "evidence/devnet/ceremony/manifest-release-b-v2.json" /sdcard/Download/
    - Tap **Connect Wallet (MWA)**.
    - Phantom will open with a connection request for "ReleaseGate".
    - Tap **Connect** to authorize.
-   - You will return to ReleaseGate showing your connected public address.
+   - You will return to ReleaseGate showing your connected public address (`42U2D1EKFaw4XLy2W9uJexuo4NxG6A2nHD7qEP5fAD2d`).
 6. **Squads Multisig Address:**
-   - Enter your multisig address (e.g., `HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR` or your dedicated staging multisig).
+   - Enter your dedicated staged multisig address:
+     `GeXHkKrpN1ZWmVXm1xAuv5Sn1ChNx9Q7gZV1Pn6RnVvU`
+   - (Vault: `9MF3gGv9eWPW2Dg3Mxn9zLRB6Q21VYrP25te7UAB4ETa`, Threshold: 2 of 2).
 7. Tap **Save and Open Workspace**.
 
 ---
@@ -75,9 +77,9 @@ adb push "evidence/devnet/ceremony/manifest-release-b-v2.json" /sdcard/Download/
 ## 6. Step 5: Import Release & Attest Provenance
 
 1. On the Workspace Home screen, navigate to **Imported Releases** (or tap **Import Release**).
-2. Tap **Select Program Binary (.so)** and choose `release_demo_v2.so` from your Downloads folder.
-3. Tap **Select Manifest (.json)** and choose `manifest-release-b-v2.json`.
-4. The app verifies that the binary length, SHA-256, and Keccak-256 match the manifest definitions.
+2. Tap **Select Program Binary (.so)** and choose `release_demo_v2.so` (available at `evidence/device/physical/release_demo_v2.so`).
+3. Tap **Select Manifest (.json)** and choose `manifest-release-b-v2.json` (available at `evidence/device/physical/manifest-release-b-v2.json`).
+4. The app verifies that the binary length (3,056 bytes), SHA-256 (`fbf510...`), and Keccak-256 match the manifest definitions.
 5. In the Reviewer Attestation sheet, review the binding declaration:
    > *"I obtained this artifact from my own review or build, not from the proposer."*
 6. Tap **Confirm Attestation**. The release is saved to your device's secure store.
@@ -86,28 +88,29 @@ adb push "evidence/devnet/ceremony/manifest-release-b-v2.json" /sdcard/Download/
 
 ## 7. Step 6: Review & Authorize Proposal
 
-1. From Workspace Home, tap on the proposal to review (e.g., **Proposal 7** or newly staged proposal).
+1. From Workspace Home, tap on **Proposal 2** (Release B: Guarded upgrade to v2, initial slot `510297318`).
 2. The **Proposal Review Screen** displays all 8 sections:
-   - Target program, Multisig, ProgramData, and Network.
+   - Target program (`CenMUMpxUG8A9tQyn2f2mDM4T3vDVhoABtGXEH6VdLs1`), Multisig, ProgramData, and Devnet.
    - Reviewed Artifact & Digests (SHA-256, Keccak-256, Verified-Build SHA-256).
    - Uploaded-Byte Comparison (asserting 0 delta and matching bytes).
-   - Deployment Slot Binding (manifest vs guard vs on-chain slot).
-   - Decoded instructions and affected accounts.
-   - 28 canonical verification checks.
-   - Governance status and connected wallet permissions.
+   - Deployment Slot Binding (manifest vs guard vs on-chain slot: `510297318`).
+   - Decoded instructions and affected accounts (5 inner instructions).
+   - 28 canonical verification checks (all passing).
+   - Governance status and connected wallet permissions (Member 1 of 2).
 3. Review the top verdict banner:
    - Displays: **"Matches reviewed artifact"** (green) and **"Execution conditions verified"** (blue).
 4. In Section 8 (Action Eligibility), tap **Approve Proposal**.
-5. Phantom wallet opens with the transaction signing sheet.
-6. Verify and confirm the approval in Phantom.
-7. Return to ReleaseGate: approval count updates to show your vote registered on Devnet.
+5. Phantom opens. If it shows its connect sheet first, tap **Connect**; Phantom closes and reopens with the **Confirm transaction** sheet.
+6. Verify and confirm the approval in Phantom. A transaction is valid for about a minute, so confirm without leaving the sheet open.
+7. Return to ReleaseGate: approval count updates to show `1 of 2` approvals registered on Devnet.
+8. Request Member 2 approval: The desktop CLI will approve Proposal 2 on command, advancing the proposal to `Approved` (2 of 2).
 
 ---
 
 ## 8. Step 7: Execution & Deployment Receipt
 
-1. If threshold is met and your key has `Execute` permission, tap **Execute Upgrade**.
-2. Confirm the execution transaction in your wallet.
+1. With Proposal 2 at `Approved` (2 of 2) and your key having `Execute` permission, tap **Execute Upgrade**.
+2. Confirm the execution transaction in Phantom.
 3. Once confirmed on Devnet, ReleaseGate navigates to the **Deployment Receipt** screen.
 4. Verify the 5 post-execution invariants:
    - Program deployment slot advanced to execution slot.
@@ -118,7 +121,18 @@ adb push "evidence/devnet/ceremony/manifest-release-b-v2.json" /sdcard/Download/
 
 ---
 
-## 9. Step 8: What to Record & Report
+## 9. Step 8: Observe Blocked Release (Proposal 1)
+
+1. Return to the proposal list and tap on **Proposal 1** (Release A: Guarded upgrade to v1).
+2. The review screen updates against current on-chain state:
+   - Top verdict card displays: **"Execution conditions no longer hold"** (red badge).
+   - Section 4 highlights slot mismatch (new execution slot vs initial review slot `510297318`).
+   - Section 8 disables **Execute Upgrade** with reason: *"Execution conditions status is not-holding, must be verified"*.
+3. Capture this screen as conclusive proof that out-of-order execution is prevented on-chain!
+
+---
+
+## 10. Step 9: What to Record & Report
 
 Please record and report the following information for the hardware verification archive:
 

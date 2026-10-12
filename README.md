@@ -137,9 +137,9 @@ The signed APK lands at:
 
 ## 5. Public Evidence & Verification Index
 
-All claims in this project are substantiated by publicly verifiable records in [`evidence/`](file:///home/azureuser/Proceed%20with%20ReleaseGate/evidence/README.md):
+All claims in this project are substantiated by publicly verifiable records in [`evidence/`](evidence/README.md):
 
-1. **On-Chain Devnet Ceremony:** [`evidence/devnet/ceremony/`](file:///home/azureuser/Proceed%20with%20ReleaseGate/evidence/devnet/ceremony/)
+1. **On-Chain Devnet Ceremony:** [`evidence/devnet/ceremony/`](evidence/devnet/ceremony/)
    - Step 17: Release B executed on-chain at slot `510077654` (Sig: `44ZgDvmrAurTLYe...`).
    - Step 18: Out-of-order Release A attempted via desktop CLI (`--skip-preflight`), failing on-chain with Lighthouse error `0x1771` (Sig: `4dxCdeExr94nMDS...`).
    - Step 19: Intentional rollback executed via counterpart Release A′ (Sig: `4s5JvEY5xbq7j...`).
@@ -157,13 +157,15 @@ All claims in this project are substantiated by publicly verifiable records in [
    ```
 
 3. **Standalone Release APK:**
-   - **File:** `apps/mobile/android/app/build/outputs/apk/release/app-release.apk`
-   - **SHA-256 Checksum:** `8817477b1fe4e4f9d85b8602b3cfdc901cb0bbfecb6c47c44f93f10c077b3b09`
+   - **Download:** `app-release.apk`, attached to the [v0.1.0 release](https://github.com/steven3002/ReleaseGate/releases/tag/v0.1.0).
+   - **Build output:** `apps/mobile/android/app/build/outputs/apk/release/app-release.apk`
+   - **SHA-256 Checksum:** `6878d83725a04a44936f1ce0ba8fbc02d8af1d3397ce6aa0a07002df5ef0a393`
    - **Signature Verification:** Verified with Android SDK `apksigner` (v2 scheme, `CN=ReleaseGate`).
 
 4. **Physical Device Validation:**
-   - Run sheet: [`evidence/device/physical/RUN_SHEET.md`](file:///home/azureuser/Proceed%20with%20ReleaseGate/evidence/device/physical/RUN_SHEET.md)
-   - Emulator records: [`evidence/device/emulator-mock-wallet/`](file:///home/azureuser/Proceed%20with%20ReleaseGate/evidence/device/emulator-mock-wallet/)
+   - Run sheet: [`evidence/device/physical/RUN_SHEET.md`](evidence/device/physical/RUN_SHEET.md)
+   - Result: approval and execution signed in Phantom on a Samsung Galaxy S21 5G, recorded in [`evidence/device/physical/README.md`](evidence/device/physical/README.md)
+   - Emulator records: [`evidence/device/emulator-mock-wallet/`](evidence/device/emulator-mock-wallet/)
 
 ---
 
