@@ -88,7 +88,7 @@ ReleaseGate/
 │   └── chain/                    # Read-only chain interface & Solana web3.js connection adapter
 ├── tools/prepare-release/        # Node.js CLI desktop preparation tool for releases, staging, and probing
 ├── programs/release-demo/        # Upgradeable test program (pinocchio) with v1 linear & v2 quadratic transforms
-└── evidence/                     # Verifiable on-chain ceremony records, local SVM lifecycle, and submission docs
+└── evidence/                     # Verifiable on-chain ceremony records, device runs, and local SVM lifecycle
 ```
 
 ---
@@ -160,7 +160,6 @@ All claims in this project are substantiated by publicly verifiable records in [
    - **File:** `apps/mobile/android/app/build/outputs/apk/release/app-release.apk`
    - **SHA-256 Checksum:** `8817477b1fe4e4f9d85b8602b3cfdc901cb0bbfecb6c47c44f93f10c077b3b09`
    - **Signature Verification:** Verified with Android SDK `apksigner` (v2 scheme, `CN=ReleaseGate`).
-   - **Submission Package:** [`evidence/submission/`](file:///home/azureuser/Proceed%20with%20ReleaseGate/evidence/submission/README.md)
 
 4. **Physical Device Validation:**
    - Run sheet: [`evidence/device/physical/RUN_SHEET.md`](file:///home/azureuser/Proceed%20with%20ReleaseGate/evidence/device/physical/RUN_SHEET.md)
