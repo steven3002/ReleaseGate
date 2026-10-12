@@ -31,17 +31,21 @@ export async function pollAndSettleOperation(
   let currentOp = operation;
 
   while (Date.now() - startTime < pollTimeoutMs) {
-    const observation = await observeOperation(chainReader, currentOp);
-    const nextOp = settle(currentOp, observation, new Date().toISOString());
+    try {
+      const observation = await observeOperation(chainReader, currentOp);
+      const nextOp = settle(currentOp, observation, new Date().toISOString());
 
-    if (nextOp.phase !== currentOp.phase || nextOp.resolution !== currentOp.resolution) {
-      await journal.saveOperation(nextOp);
-      options?.onPhaseChange?.(nextOp);
-      currentOp = nextOp;
-    }
+      if (nextOp.phase !== currentOp.phase || nextOp.resolution !== currentOp.resolution) {
+        await journal.saveOperation(nextOp);
+        options?.onPhaseChange?.(nextOp);
+        currentOp = nextOp;
+      }
 
-    if (TERMINAL_PHASES.has(currentOp.phase)) {
-      return currentOp;
+      if (TERMINAL_PHASES.has(currentOp.phase)) {
+        return currentOp;
+      }
+    } catch (err) {
+      console.warn('[Recovery] Observe error during poll (tolerating network cut):', err);
     }
 
     await delay(pollIntervalMs);

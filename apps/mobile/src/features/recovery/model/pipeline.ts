@@ -1,5 +1,5 @@
 import type { Operation } from 'release-core';
-import { settle } from 'release-core';
+import { observeOperation, settle } from 'release-core';
 import { pollAndSettleOperation } from './settler';
 import type { OperationPipelineInput, OperationPipelineResult } from './types';
 
@@ -67,15 +67,39 @@ export async function executeOperationPipeline(
     input.onPhaseChange?.(submittedOp);
   } catch (err: unknown) {
     console.log('[Recovery] Wallet signing/submission encountered error:', err);
+    const errMsg = err instanceof Error ? err.message : String(err);
+
+    // Wrong account: stops early before signing, terminal phase failed
+    const isWrongAccount =
+      errMsg.includes('is not the selected member') ||
+      errMsg.includes('Connected account');
+
+    if (isWrongAccount) {
+      const wrongAccountOp: Operation = {
+        ...preparedOp,
+        phase: 'failed',
+        updatedAt: new Date().toISOString(),
+        resolution: errMsg,
+      };
+      await journal.saveOperation(wrongAccountOp);
+      input.onPhaseChange?.(wrongAccountOp);
+      return { operation: wrongAccountOp };
+    }
 
     const isDeclined =
       (err as Record<string, unknown>)?.isUserDeclined === true ||
-      String(err).toLowerCase().includes('declined');
+      errMsg.toLowerCase().includes('declined') ||
+      errMsg.toLowerCase().includes('refused') ||
+      errMsg.toLowerCase().includes('not signed') ||
+      errMsg.toLowerCase().includes('cancelled') ||
+      errMsg.toLowerCase().includes('canceled');
 
     if (isDeclined) {
+      // Observe chain state first: effect predicate wins!
+      const observation = await observeOperation(input.chainReader, handedOffOp);
       const declinedOp = settle(
         handedOffOp,
-        { userDeclined: true },
+        { ...observation, userDeclined: true },
         new Date().toISOString()
       );
       await journal.saveOperation(declinedOp);
@@ -88,7 +112,7 @@ export async function executeOperationPipeline(
       ...handedOffOp,
       phase: 'unresolved',
       updatedAt: new Date().toISOString(),
-      resolution: `Submission exception: ${String(err)}`,
+      resolution: `Submission exception: ${errMsg}`,
     };
     await journal.saveOperation(failedOrUnresolvedOp);
     input.onPhaseChange?.(failedOrUnresolvedOp);

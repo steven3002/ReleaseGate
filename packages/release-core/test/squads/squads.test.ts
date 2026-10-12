@@ -8,7 +8,7 @@ import { decodeProposalAccount } from '../../src/squads/proposal';
 import { decodeStoredTransaction } from '../../src/squads/stored-transaction';
 import { deriveMultisigPda, deriveVaultPda, deriveTransactionPda, deriveProposalPda } from '../../src/squads/addresses';
 import { parsePermissions, getMemberCapabilities } from '../../src/squads/permissions';
-import { buildCreateGuardedProposal, buildApprove, buildReject, buildExecute } from '../../src/squads/instructions';
+import { buildCreateGuardedProposal, buildApprove, buildReject, buildExecute, computeVaultTransactionMessageSha256 } from '../../src/squads/instructions';
 import { getSquadsErrorName } from '../../src/squads/errors';
 import type { ChainReader } from '../../src/chain/chain-reader';
 
@@ -185,6 +185,25 @@ describe('squads instruction builders and byte exactness (Pass Mark 2)', () => {
     // vaultTransactionCreate + proposalCreate
     assert.equal(createIxs[0]?.programId, mainnetFixture.constants.squads_program);
     assert.equal(createIxs[1]?.programId, mainnetFixture.constants.squads_program);
+
+    // Verify computed expected message sha256 matches fixture stored transaction message sha256
+    const expectedHash = computeVaultTransactionMessageSha256(
+      mainnetFixture.addresses.vault,
+      innerInstructions
+    );
+    const storedTxBytes = Buffer.from(
+      mainnetFixture.snapshots['all-approved-before-any-execution'].transactions['1'].data_base64,
+      'base64'
+    );
+    const decodedStoredTx = decodeStoredTransaction(
+      mainnetFixture.proposals['1'].transaction_address,
+      storedTxBytes,
+      100
+    );
+    assert.equal(decodedStoredTx.ok, true);
+    if (decodedStoredTx.ok) {
+      assert.equal(expectedHash, decodedStoredTx.value.messageSha256);
+    }
   });
 
   it('builds vote instructions for approve and reject', () => {

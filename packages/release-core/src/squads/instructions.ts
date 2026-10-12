@@ -7,6 +7,7 @@ import {
 import * as sq from '@sqds/multisig';
 import type { ChainReader } from '../chain/chain-reader';
 import type { Instruction } from '../chain/instruction';
+import { sha256 } from '../digest/sha256';
 import { deriveMultisigPda, deriveVaultPda } from './addresses';
 
 export interface CreateGuardedProposalParams {
@@ -100,6 +101,46 @@ export function buildCreateGuardedProposal(
   });
 
   return [toCoreInstruction(vaultTxIx), toCoreInstruction(proposalIx)];
+}
+
+/**
+ * Computes the messageSha256 of the stored transaction that will be produced
+ * when inner instructions are wrapped with the vault as payer.
+ * Matches the on-chain stored VaultTransaction message sha256 byte-for-byte.
+ */
+export function computeVaultTransactionMessageSha256(
+  vaultAddress: string,
+  innerInstructions: readonly Instruction[]
+): string {
+  const vaultPda = new PublicKey(vaultAddress);
+  const innerWeb3Instructions = innerInstructions.map(toWeb3Instruction);
+  const messageV0 = new TransactionMessage({
+    payerKey: vaultPda,
+    recentBlockhash: '11111111111111111111111111111111',
+    instructions: innerWeb3Instructions,
+  }).compileToV0Message();
+
+  const vaultTxMessage = {
+    numSigners: messageV0.header.numRequiredSignatures,
+    numWritableSigners:
+      messageV0.header.numRequiredSignatures -
+      messageV0.header.numReadonlySignedAccounts,
+    numWritableNonSigners:
+      messageV0.staticAccountKeys.length -
+      messageV0.header.numRequiredSignatures -
+      messageV0.header.numReadonlyUnsignedAccounts,
+    accountKeys: messageV0.staticAccountKeys,
+    instructions: messageV0.compiledInstructions.map((ix) => ({
+      programIdIndex: ix.programIdIndex,
+      accountIndexes: new Uint8Array(ix.accountKeyIndexes),
+      data: new Uint8Array(ix.data),
+    })),
+    addressTableLookups: [],
+  };
+
+  const [serialized] =
+    sq.generated.vaultTransactionMessageBeet.serialize(vaultTxMessage);
+  return sha256(serialized);
 }
 
 export function buildApprove(params: ProposalVoteParams): Instruction {

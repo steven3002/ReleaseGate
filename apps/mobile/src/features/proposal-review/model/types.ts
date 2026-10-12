@@ -1,4 +1,5 @@
 import type {
+  Operation,
   ProposalInspection,
   ReviewVerdict,
 } from 'release-core';
@@ -16,11 +17,13 @@ export interface ProposalReviewState {
   readonly verdict: ReviewVerdict | null;
   readonly contextSlot: number;
   readonly hashTimingMs: number | null;
+  readonly activeOperation?: Operation | null | undefined;
 }
 
 export interface ProposalReviewActions {
   readonly refresh: () => Promise<void>;
   readonly selectRelease: (releaseId: string | null) => void;
+  readonly checkStatus?: () => Promise<void>;
 }
 
 export interface ProposalReviewResult {

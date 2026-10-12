@@ -233,6 +233,17 @@ export function WorkspaceHomeScreen() {
         ) : null}
       </View>
 
+      {/* Operations Journal Button */}
+      <View style={styles.journalRow}>
+        <Button
+          title="Operations Journal"
+          variant="secondary"
+          onPress={() => navigation.navigate('PendingOperations')}
+          style={styles.journalButton}
+          accessibilityLabel="Operations Journal button"
+        />
+      </View>
+
       {/* Proposals Section (Pass Mark 6) */}
       <View style={styles.sectionHeaderRow}>
         <Text style={styles.sectionTitle}>Proposals ({proposals.length})</Text>
@@ -402,6 +413,12 @@ const styles = StyleSheet.create({
   rowActionButton: {
     flex: 1,
     minHeight: 48,
+  },
+  journalRow: {
+    marginBottom: 12,
+  },
+  journalButton: {
+    minHeight: 44,
   },
   sectionHeaderRow: {
     marginTop: 16,

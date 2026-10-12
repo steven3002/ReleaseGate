@@ -12,3 +12,5 @@ export {
   type OperationPipelineInput,
   type OperationPipelineResult,
 } from './model/types';
+export { useRecoveryResume } from './model/useRecoveryResume';
+export { PendingOperationsScreen } from './screens/PendingOperationsScreen';

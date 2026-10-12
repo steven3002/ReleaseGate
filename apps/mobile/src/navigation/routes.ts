@@ -14,4 +14,5 @@ export type RootStackParamList = {
     multisig?: string | undefined;
     transactionIndex?: string | undefined;
   };
+  PendingOperations: undefined;
 };

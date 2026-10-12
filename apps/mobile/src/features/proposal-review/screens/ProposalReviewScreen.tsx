@@ -324,18 +324,21 @@ export function ProposalReviewScreen() {
           inspection={state.inspection}
         />
 
-        {/* 8. Action Eligibility (Interactive in S7) */}
+        {/* 8. Action Eligibility (Interactive in S7, Recovery in S9) */}
         <ActionEligibilitySection
           verdict={state.verdict}
           proposal={state.inspection.proposal}
           connectedMember={workspace.member}
           memberCapabilities={memberCapabilities}
+          activeOperation={state.activeOperation}
           isSubmitting={actionInProgress}
+          isCheckingStatus={state.refreshing}
           onApprove={handleApprove}
           onReject={handleReject}
           onExecute={handleExecute}
           onCreateReplacement={handleCreateReplacement}
           onViewReceipt={handleViewReceipt}
+          onCheckStatus={actions.checkStatus}
         />
       </ScrollView>
 

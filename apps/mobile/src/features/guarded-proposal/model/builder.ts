@@ -3,6 +3,7 @@ import {
   assessStoredTransaction,
   buildCreateGuardedProposal,
   buildGuardedUpgrade,
+  computeVaultTransactionMessageSha256,
   decodeMultisigAccount,
   decodeProposalAccount,
   decodeStoredTransaction,
@@ -117,6 +118,11 @@ export async function executeCreateGuardedProposal(
     tx.add(toWeb3Instruction(ix));
   }
 
+  const expectedMessageSha256 = computeVaultTransactionMessageSha256(
+    plan.vault,
+    innerCoreInstructions
+  );
+
   const opId = `create-guarded-${plan.multisig.slice(0, 8)}-${plan.transactionIndex}-${Date.now()}`;
   const operation: Operation = {
     id: opId,
@@ -129,6 +135,7 @@ export async function executeCreateGuardedProposal(
     submission: 'app-rpc',
     blockhash,
     lastValidBlockHeight,
+    expectedMessageSha256,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };

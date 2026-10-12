@@ -275,4 +275,133 @@ describe('Recovery operation pipeline (Pass Mark 10)', () => {
     const stored = await journal.getOperation(opId);
     assert.equal(stored?.phase, 'declined');
   });
+
+  it('stops early and transitions to failed without signing when wallet account does not match workspace member', async () => {
+    const workspaceMember = Keypair.generate().publicKey.toBase58();
+    const wrongWalletMember = Keypair.generate().publicKey.toBase58();
+    const opId = `test-op-wrong-account-${Date.now()}`;
+    const initialOp: Operation = {
+      id: opId,
+      kind: 'approve',
+      clusterId: 'devnet',
+      multisig: 'HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR',
+      transactionIndex: 1n,
+      member: workspaceMember,
+      phase: 'prepared',
+      submission: 'app-rpc',
+      blockhash: '11111111111111111111111111111111',
+      lastValidBlockHeight: 1000,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    const journal = new InMemoryJournal();
+    let signTransactionsCalled = false;
+
+    // Signer that validates member before requesting signatures (like MwaWalletSigner)
+    const stubSigner: WalletSigner = {
+      connect: async () => ({ member: wrongWalletMember, authToken: 'tok' }),
+      disconnect: async () => {},
+      getCachedMember: async () => wrongWalletMember,
+      signAndSubmit: async (req) => {
+        // Enforce member check early, exactly as MwaWalletSigner does
+        verifyAuthorizedMember(wrongWalletMember, req.member);
+        signTransactionsCalled = true;
+        return {
+          submissionMethod: 'app-rpc',
+          signature: 'sig-test',
+        };
+      },
+    };
+
+    const stubChainReader: any = {};
+    const stubConnection: any = {};
+    const tx = new Transaction();
+
+    const result = await executeOperationPipeline({
+      operation: initialOp,
+      transaction: tx,
+      cluster: DEVNET_CLUSTER,
+      connection: stubConnection,
+      chainReader: stubChainReader,
+      walletSigner: stubSigner,
+      journal,
+      pollTimeoutMs: 50,
+      pollIntervalMs: 10,
+    });
+
+    assert.equal(signTransactionsCalled, false, 'signing request must never occur for wrong account');
+    assert.equal(result.operation.phase, 'failed');
+    assert.match(
+      result.operation.resolution ?? '',
+      /Connected account .* is not the selected member/
+    );
+    const stored = await journal.getOperation(opId);
+    assert.equal(stored?.phase, 'failed');
+  });
+
+  it('leaves operation unresolved when wallet signing encounters unexpected error or timeout', async () => {
+    const member = Keypair.generate().publicKey.toBase58();
+    const opId = `test-op-unresolved-${Date.now()}`;
+    const initialOp: Operation = {
+      id: opId,
+      kind: 'approve',
+      clusterId: 'devnet',
+      multisig: 'HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR',
+      transactionIndex: 1n,
+      member,
+      phase: 'prepared',
+      submission: 'app-rpc',
+      blockhash: '11111111111111111111111111111111',
+      lastValidBlockHeight: 1000,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    const journal = new InMemoryJournal();
+
+    const stubSigner: WalletSigner = {
+      connect: async () => ({ member, authToken: 'tok' }),
+      disconnect: async () => {},
+      getCachedMember: async () => member,
+      signAndSubmit: async () => {
+        throw new Error('Connection reset by peer');
+      },
+    };
+
+    // Chain reader observing that member is not yet in approved list
+    const stubChainReader: any = {
+      readProposalSnapshot: async () => ({
+        address: 'prop-address',
+        transactionIndex: 1n,
+        multisig: initialOp.multisig,
+        status: { kind: 'Active' },
+        approved: [],
+        rejected: [],
+        cancelled: [],
+        executed: false,
+      }),
+      readAccount: async () => null,
+      getSignatureStatuses: async () => [null],
+      getLatestBlockhash: async () => ({ blockHeight: 500 }),
+    };
+    const stubConnection: any = {};
+    const tx = new Transaction();
+
+    const result = await executeOperationPipeline({
+      operation: initialOp,
+      transaction: tx,
+      cluster: DEVNET_CLUSTER,
+      connection: stubConnection,
+      chainReader: stubChainReader,
+      walletSigner: stubSigner,
+      journal,
+      pollTimeoutMs: 50,
+      pollIntervalMs: 10,
+    });
+
+    assert.equal(result.operation.phase, 'unresolved');
+    const stored = await journal.getOperation(opId);
+    assert.equal(stored?.phase, 'unresolved');
+  });
 });

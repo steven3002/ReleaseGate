@@ -8,9 +8,11 @@ import {
 import type {
   ActionDecision,
   MemberCapabilities,
+  Operation,
   ProposalSnapshot,
   ReviewVerdict,
 } from 'release-core';
+import { TERMINAL_PHASES } from '../../recovery';
 import { Card, Badge } from '../../../ui';
 
 export interface ActionEligibilitySectionProps {
@@ -18,12 +20,15 @@ export interface ActionEligibilitySectionProps {
   readonly proposal?: ProposalSnapshot | null | undefined;
   readonly connectedMember?: string | undefined;
   readonly memberCapabilities?: MemberCapabilities | undefined;
+  readonly activeOperation?: Operation | null | undefined;
   readonly isSubmitting?: boolean | undefined;
+  readonly isCheckingStatus?: boolean | undefined;
   readonly onApprove?: (() => void) | undefined;
   readonly onReject?: (() => void) | undefined;
   readonly onExecute?: (() => void) | undefined;
   readonly onCreateReplacement?: (() => void) | undefined;
   readonly onViewReceipt?: (() => void) | undefined;
+  readonly onCheckStatus?: (() => void) | undefined;
 }
 
 export function ActionEligibilitySection({
@@ -31,12 +36,15 @@ export function ActionEligibilitySection({
   proposal,
   connectedMember,
   memberCapabilities,
+  activeOperation,
   isSubmitting = false,
+  isCheckingStatus = false,
   onApprove,
   onReject,
   onExecute,
   onCreateReplacement,
   onViewReceipt,
+  onCheckStatus,
 }: ActionEligibilitySectionProps) {
   const actions = verdict?.actions;
   const isExecuted = proposal?.status.kind === 'Executed';
@@ -75,199 +83,241 @@ export function ActionEligibilitySection({
         conditions.
       </Text>
 
-      {/* Voting Controls (Vote Permission required; Pass Mark 12) */}
-      {canVote ? (
-        <View style={styles.actionGroup}>
-          <Text style={styles.groupHeader}>Voting</Text>
-
-          {/* Approve Action */}
-          <View style={styles.actionCard}>
-            <View style={styles.actionHeader}>
-              <Text style={styles.actionName}>Approve</Text>
-              {hasApproved ? (
-                <Badge label="Approved by You" variant="success" />
-              ) : (
-                <Badge
-                  label={
-                    actions?.approve?.allowed
-                      ? 'Available'
-                      : 'Blocked'
-                  }
-                  variant={actions?.approve?.allowed ? 'success' : 'neutral'}
-                />
-              )}
-            </View>
-
-            {hasApproved ? (
-              <Text style={styles.alreadyVotedText}>
-                Your wallet has already signed approval for this proposal.
-              </Text>
-            ) : actions?.approve?.allowed ? (
-              <TouchableOpacity
-                style={[
-                  styles.approveButton,
-                  isSubmitting && styles.buttonDisabled,
-                ]}
-                onPress={onApprove}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <ActivityIndicator size="small" color="#ffffff" />
-                ) : (
-                  <Text style={styles.approveButtonText}>Approve Proposal</Text>
-                )}
-              </TouchableOpacity>
-            ) : (
-              renderBlockedReasons(actions?.approve)
-            )}
+      {activeOperation && !TERMINAL_PHASES.has(activeOperation.phase) ? (
+        <View style={styles.unresolvedCard}>
+          <View style={styles.unresolvedHeader}>
+            <Text style={styles.unresolvedTitle}>Operation in Progress</Text>
+            <Badge
+              label={activeOperation.phase.toUpperCase()}
+              variant={activeOperation.phase === 'unresolved' ? 'warning' : 'neutral'}
+            />
           </View>
-
-          {/* Reject Action */}
-          <View style={styles.actionCard}>
-            <View style={styles.actionHeader}>
-              <Text style={styles.actionName}>Reject</Text>
-              {hasRejected ? (
-                <Badge label="Rejected by You" variant="neutral" />
-              ) : (
-                <Badge
-                  label={
-                    actions?.reject?.allowed ? 'Available' : 'Blocked'
-                  }
-                  variant={actions?.reject?.allowed ? 'neutral' : 'neutral'}
-                />
-              )}
-            </View>
-
-            {hasRejected ? (
-              <Text style={styles.alreadyVotedText}>
-                Your wallet has already recorded rejection for this proposal.
-              </Text>
-            ) : actions?.reject?.allowed ? (
-              <TouchableOpacity
-                style={[
-                  styles.rejectButton,
-                  isSubmitting && styles.buttonDisabled,
-                ]}
-                onPress={onReject}
-                disabled={isSubmitting}
-              >
-                <Text style={styles.rejectButtonText}>Reject Proposal</Text>
-              </TouchableOpacity>
-            ) : (
-              renderBlockedReasons(actions?.reject)
-            )}
-          </View>
-        </View>
-      ) : null}
-
-      {/* Execution Controls (Separate from Approve, Execute Permission required; Pass Mark 12) */}
-      {canExecute ? (
-        <View style={styles.actionGroup}>
-          <Text style={styles.groupHeader}>Execution (Separate Action)</Text>
-
-          <View style={styles.actionCard}>
-            <View style={styles.actionHeader}>
-              <Text style={styles.actionName}>Execute Upgrade</Text>
-              {isExecuted ? (
-                <Badge label="Executed" variant="success" />
-              ) : (
-                <Badge
-                  label={
-                    actions?.execute?.allowed ? 'Available' : 'Blocked'
-                  }
-                  variant={actions?.execute?.allowed ? 'success' : 'neutral'}
-                />
-              )}
-            </View>
-
-            {isExecuted ? (
-              <View style={styles.executedBox}>
-                <Text style={styles.executedText}>
-                  This proposal has been executed on chain.
-                </Text>
-                <TouchableOpacity
-                  style={styles.receiptButton}
-                  onPress={onViewReceipt}
-                >
-                  <Text style={styles.receiptButtonText}>
-                    View Deployment Receipt
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            ) : actions?.execute?.allowed ? (
-              <TouchableOpacity
-                style={[
-                  styles.executeButton,
-                  isSubmitting && styles.buttonDisabled,
-                ]}
-                onPress={onExecute}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <ActivityIndicator size="small" color="#ffffff" />
-                ) : (
-                  <Text style={styles.executeButtonText}>Execute Upgrade</Text>
-                )}
-              </TouchableOpacity>
-            ) : (
-              renderBlockedReasons(actions?.execute)
-            )}
-          </View>
-        </View>
-      ) : null}
-
-      {/* Guarded Replacement Control (Initiate Permission required; Pass Mark 12) */}
-      {canInitiate && actions?.createGuardedReplacement ? (
-        <View style={styles.actionGroup}>
-          <Text style={styles.groupHeader}>Replacement</Text>
-
-          <View style={styles.actionCard}>
-            <View style={styles.actionHeader}>
-              <Text style={styles.actionName}>
-                Create Guarded Replacement
-              </Text>
-              <Badge
-                label={
-                  actions.createGuardedReplacement.allowed
-                    ? 'Available'
-                    : 'Blocked'
-                }
-                variant={
-                  actions.createGuardedReplacement.allowed
-                    ? 'success'
-                    : 'neutral'
-                }
-              />
-            </View>
-
-            {actions.createGuardedReplacement.allowed ? (
-              <TouchableOpacity
-                style={[
-                  styles.replacementButton,
-                  isSubmitting && styles.buttonDisabled,
-                ]}
-                onPress={onCreateReplacement}
-                disabled={isSubmitting}
-              >
-                <Text style={styles.replacementButtonText}>
-                  Create Guarded Replacement
-                </Text>
-              </TouchableOpacity>
-            ) : (
-              renderBlockedReasons(actions.createGuardedReplacement)
-            )}
-          </View>
-        </View>
-      ) : null}
-
-      {/* When user has no permissions or read-only */}
-      {!canVote && !canExecute && !canInitiate && (
-        <View style={styles.readOnlyBox}>
-          <Text style={styles.readOnlyText}>
-            Connected wallet is not a multisig member with Initiate, Vote, or
-            Execute permissions.
+          <Text style={styles.unresolvedDesc}>
+            An active operation ({activeOperation.kind}) is currently {activeOperation.phase}.
+            Retry is blocked until the on-chain outcome is settled.
           </Text>
+          {activeOperation.resolution ? (
+            <Text style={styles.unresolvedDetail}>
+              Status: {activeOperation.resolution}
+            </Text>
+          ) : null}
+          {activeOperation.signature ? (
+            <Text style={styles.unresolvedSignature}>
+              Signature: {activeOperation.signature.slice(0, 16)}...
+            </Text>
+          ) : null}
+          <TouchableOpacity
+            style={[
+              styles.checkStatusButton,
+              isCheckingStatus && styles.buttonDisabled,
+            ]}
+            onPress={onCheckStatus}
+            disabled={isCheckingStatus}
+          >
+            {isCheckingStatus ? (
+              <ActivityIndicator size="small" color="#ffffff" />
+            ) : (
+              <Text style={styles.checkStatusButtonText}>Check Status</Text>
+            )}
+          </TouchableOpacity>
         </View>
+      ) : (
+        <>
+          {/* Voting Controls (Vote Permission required; Pass Mark 12) */}
+          {canVote ? (
+            <View style={styles.actionGroup}>
+              <Text style={styles.groupHeader}>Voting</Text>
+
+              {/* Approve Action */}
+              <View style={styles.actionCard}>
+                <View style={styles.actionHeader}>
+                  <Text style={styles.actionName}>Approve</Text>
+                  {hasApproved ? (
+                    <Badge label="Approved by You" variant="success" />
+                  ) : (
+                    <Badge
+                      label={
+                        actions?.approve?.allowed
+                          ? 'Available'
+                          : 'Blocked'
+                      }
+                      variant={actions?.approve?.allowed ? 'success' : 'neutral'}
+                    />
+                  )}
+                </View>
+
+                {hasApproved ? (
+                  <Text style={styles.alreadyVotedText}>
+                    Your wallet has already signed approval for this proposal.
+                  </Text>
+                ) : actions?.approve?.allowed ? (
+                  <TouchableOpacity
+                    style={[
+                      styles.approveButton,
+                      isSubmitting && styles.buttonDisabled,
+                    ]}
+                    onPress={onApprove}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <ActivityIndicator size="small" color="#ffffff" />
+                    ) : (
+                      <Text style={styles.approveButtonText}>Approve Proposal</Text>
+                    )}
+                  </TouchableOpacity>
+                ) : (
+                  renderBlockedReasons(actions?.approve)
+                )}
+              </View>
+
+              {/* Reject Action */}
+              <View style={styles.actionCard}>
+                <View style={styles.actionHeader}>
+                  <Text style={styles.actionName}>Reject</Text>
+                  {hasRejected ? (
+                    <Badge label="Rejected by You" variant="neutral" />
+                  ) : (
+                    <Badge
+                      label={
+                        actions?.reject?.allowed ? 'Available' : 'Blocked'
+                      }
+                      variant={actions?.reject?.allowed ? 'neutral' : 'neutral'}
+                    />
+                  )}
+                </View>
+
+                {hasRejected ? (
+                  <Text style={styles.alreadyVotedText}>
+                    Your wallet has already recorded rejection for this proposal.
+                  </Text>
+                ) : actions?.reject?.allowed ? (
+                  <TouchableOpacity
+                    style={[
+                      styles.rejectButton,
+                      isSubmitting && styles.buttonDisabled,
+                    ]}
+                    onPress={onReject}
+                    disabled={isSubmitting}
+                  >
+                    <Text style={styles.rejectButtonText}>Reject Proposal</Text>
+                  </TouchableOpacity>
+                ) : (
+                  renderBlockedReasons(actions?.reject)
+                )}
+              </View>
+            </View>
+          ) : null}
+
+          {/* Execution Controls (Separate from Approve, Execute Permission required; Pass Mark 12) */}
+          {canExecute ? (
+            <View style={styles.actionGroup}>
+              <Text style={styles.groupHeader}>Execution (Separate Action)</Text>
+
+              <View style={styles.actionCard}>
+                <View style={styles.actionHeader}>
+                  <Text style={styles.actionName}>Execute Upgrade</Text>
+                  {isExecuted ? (
+                    <Badge label="Executed" variant="success" />
+                  ) : (
+                    <Badge
+                      label={
+                        actions?.execute?.allowed ? 'Available' : 'Blocked'
+                      }
+                      variant={actions?.execute?.allowed ? 'success' : 'neutral'}
+                    />
+                  )}
+                </View>
+
+                {isExecuted ? (
+                  <View style={styles.executedBox}>
+                    <Text style={styles.executedText}>
+                      This proposal has been executed on chain.
+                    </Text>
+                    <TouchableOpacity
+                      style={styles.receiptButton}
+                      onPress={onViewReceipt}
+                    >
+                      <Text style={styles.receiptButtonText}>
+                        View Deployment Receipt
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : actions?.execute?.allowed ? (
+                  <TouchableOpacity
+                    style={[
+                      styles.executeButton,
+                      isSubmitting && styles.buttonDisabled,
+                    ]}
+                    onPress={onExecute}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <ActivityIndicator size="small" color="#ffffff" />
+                    ) : (
+                      <Text style={styles.executeButtonText}>Execute Upgrade</Text>
+                    )}
+                  </TouchableOpacity>
+                ) : (
+                  renderBlockedReasons(actions?.execute)
+                )}
+              </View>
+            </View>
+          ) : null}
+
+          {/* Guarded Replacement Control (Initiate Permission required; Pass Mark 12) */}
+          {canInitiate && actions?.createGuardedReplacement ? (
+            <View style={styles.actionGroup}>
+              <Text style={styles.groupHeader}>Replacement</Text>
+
+              <View style={styles.actionCard}>
+                <View style={styles.actionHeader}>
+                  <Text style={styles.actionName}>
+                    Create Guarded Replacement
+                  </Text>
+                  <Badge
+                    label={
+                      actions.createGuardedReplacement.allowed
+                        ? 'Available'
+                        : 'Blocked'
+                    }
+                    variant={
+                      actions.createGuardedReplacement.allowed
+                        ? 'success'
+                        : 'neutral'
+                    }
+                  />
+                </View>
+
+                {actions.createGuardedReplacement.allowed ? (
+                  <TouchableOpacity
+                    style={[
+                      styles.replacementButton,
+                      isSubmitting && styles.buttonDisabled,
+                    ]}
+                    onPress={onCreateReplacement}
+                    disabled={isSubmitting}
+                  >
+                    <Text style={styles.replacementButtonText}>
+                      Create Guarded Replacement
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  renderBlockedReasons(actions.createGuardedReplacement)
+                )}
+              </View>
+            </View>
+          ) : null}
+
+          {/* When user has no permissions or read-only */}
+          {!canVote && !canExecute && !canInitiate && (
+            <View style={styles.readOnlyBox}>
+              <Text style={styles.readOnlyText}>
+                Connected wallet is not a multisig member with Initiate, Vote, or
+                Execute permissions.
+              </Text>
+            </View>
+          )}
+        </>
       )}
     </Card>
   );
@@ -417,5 +467,53 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#64748b',
     textAlign: 'center',
+  },
+  unresolvedCard: {
+    backgroundColor: '#fffbeb',
+    borderColor: '#f59e0b',
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 14,
+    marginBottom: 8,
+  },
+  unresolvedHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  unresolvedTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#92400e',
+  },
+  unresolvedDesc: {
+    fontSize: 12,
+    color: '#78350f',
+    marginBottom: 8,
+    lineHeight: 16,
+  },
+  unresolvedDetail: {
+    fontSize: 12,
+    color: '#b45309',
+    marginBottom: 6,
+    fontWeight: '500',
+  },
+  unresolvedSignature: {
+    fontSize: 11,
+    color: '#6b7280',
+    marginBottom: 10,
+  },
+  checkStatusButton: {
+    backgroundColor: '#d97706',
+    borderRadius: 6,
+    paddingVertical: 10,
+    alignItems: 'center',
+    marginTop: 6,
+  },
+  checkStatusButtonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '700',
   },
 });

@@ -122,6 +122,7 @@ export {
   buildCreateMultisig,
   buildExecute,
   buildReject,
+  computeVaultTransactionMessageSha256,
   toCoreInstruction,
   toWeb3Instruction,
 } from './squads/instructions';

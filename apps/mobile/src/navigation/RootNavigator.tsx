@@ -11,6 +11,7 @@ import {
 import { ProposalReviewScreen } from '../features/proposal-review';
 import { CreateGuardedProposalScreen } from '../features/guarded-proposal';
 import { ReceiptScreen } from '../features/receipts';
+import { PendingOperationsScreen } from '../features/recovery';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -59,6 +60,11 @@ export function RootNavigator() {
         name="DeploymentReceipt"
         component={ReceiptScreen}
         options={{ title: 'Deployment Receipt' }}
+      />
+      <Stack.Screen
+        name="PendingOperations"
+        component={PendingOperationsScreen}
+        options={{ title: 'Operations Journal' }}
       />
     </Stack.Navigator>
   );

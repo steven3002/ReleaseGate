@@ -1,7 +1,14 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import type { ProposalInspection, ReviewVerdict } from 'release-core';
+import type { Operation, ProposalInspection, ReviewVerdict } from 'release-core';
+import { getOrCreateChainReader } from '../../../platform/rpc';
 import { getActiveWorkspace, type Workspace } from '../../workspace';
 import { listReleases, type ImportedRelease } from '../../release-import';
+import {
+  listOperations,
+  saveOperation,
+  pollAndSettleOperation,
+  TERMINAL_PHASES,
+} from '../../recovery';
 import { fetchProposalInspection } from './proposal-reader';
 import {
   filterCandidateReleases,
@@ -26,6 +33,7 @@ export function useProposalReview(
   const [verdict, setVerdict] = useState<ReviewVerdict | null>(null);
   const [contextSlot, setContextSlot] = useState<number>(0);
   const [hashTimingMs, setHashTimingMs] = useState<number | null>(null);
+  const [activeOperation, setActiveOperation] = useState<Operation | null>(null);
 
   const explicitSelectionRef = useRef<{ isSet: boolean; releaseId: string | null }>({
     isSet: false,
@@ -130,6 +138,17 @@ export function useProposalReview(
         : null;
 
       await runEvaluation(activeWs, insp, activeRelease);
+
+      // Check for any active / non-terminal operations for this proposal
+      const ops = await listOperations();
+      const currentActiveOp =
+        ops.find(
+          (op) =>
+            op.multisig === activeWs.multisig &&
+            op.transactionIndex === transactionIndex &&
+            !TERMINAL_PHASES.has(op.phase)
+        ) ?? null;
+      setActiveOperation(currentActiveOp);
     } catch (err) {
       setError(`Failed to read proposal: ${String(err)}`);
     } finally {
@@ -165,6 +184,29 @@ export function useProposalReview(
     await loadData();
   }, [loadData]);
 
+  const checkStatus = useCallback(async () => {
+    if (!activeOperation || !workspace) return;
+    try {
+      setRefreshing(true);
+      const chainReader = getOrCreateChainReader(workspace.rpcUrl);
+      const settled = await pollAndSettleOperation(activeOperation, chainReader, {
+        pollTimeoutMs: 5000,
+        pollIntervalMs: 1000,
+      });
+      await saveOperation(settled);
+      if (TERMINAL_PHASES.has(settled.phase)) {
+        setActiveOperation(null);
+      } else {
+        setActiveOperation(settled);
+      }
+      await loadData();
+    } catch (err) {
+      console.warn('[Recovery] Status check failed:', err);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [activeOperation, loadData, workspace]);
+
   const state: ProposalReviewState = {
     loading,
     refreshing,
@@ -177,6 +219,7 @@ export function useProposalReview(
     verdict,
     contextSlot,
     hashTimingMs,
+    activeOperation,
   };
 
   return {
@@ -184,6 +227,7 @@ export function useProposalReview(
     actions: {
       refresh,
       selectRelease,
+      checkStatus,
     },
   };
 }
