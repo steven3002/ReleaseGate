@@ -1,0 +1,31 @@
+{
+  "command": "create-guarded-proposal",
+  "timestamp": "2026-10-11T23:41:48.837Z",
+  "cluster": "devnet",
+  "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+  "inputs": {
+    "multisig": "HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR",
+    "transactionIndex": 6,
+    "kind": "guarded-upgrade",
+    "releaseName": "release-demo",
+    "releaseVersion": "1",
+    "artifactLength": 3040,
+    "expectedDeploymentSlot": 510053608
+  },
+  "addresses": {
+    "multisig": "HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR",
+    "vault": "BmYcaND7hRez4HaFU48VQmdnf15rSZzCfpu813Ddbbro",
+    "creator": "DFjKzxhsoeikC8QWW8sDPvbWynExDQaMrehYyibxVqbF",
+    "program": "H46umyRgSUPAy3BNUanAriALsQw2KfL37uUJs9ZLfcgs",
+    "programData": "ExAiRVn7fZfBLWG8yUd9jBivWFoVuH5m8f71nQwyBRBY",
+    "buffer": "FKWUwUYuwVfBtFVnX1n4TDdueWbKYHo7reppvbc8Pg6t",
+    "spill": "DFjKzxhsoeikC8QWW8sDPvbWynExDQaMrehYyibxVqbF"
+  },
+  "signatures": [
+    "5SkMhWmQWS8LjhcwGssNGMEDWKmsJAJgn313LvQmhNM12cAfKryXpEHcvSequkoPW9Youe6yk8B8GCCTNMMdWdF3"
+  ],
+  "slots": {
+    "expectedDeploymentSlot": 510053608
+  },
+  "outcome": "success"
+}

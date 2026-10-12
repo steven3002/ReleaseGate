@@ -1,0 +1,36 @@
+{
+  "command": "propose",
+  "timestamp": "2026-10-11T23:54:04.344Z",
+  "cluster": "devnet",
+  "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+  "inputs": {
+    "multisig": "HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR",
+    "program": "H46umyRgSUPAy3BNUanAriALsQw2KfL37uUJs9ZLfcgs",
+    "buffer": "oGVBUqdjVDtVY5jN9Mja6VNRWDWRuTCxquY4sopYABF",
+    "kind": "no-slot-guard",
+    "plannedTransactionIndex": 8,
+    "expectedDeploymentSlot": "510053608",
+    "innerInstructionCount": 4
+  },
+  "addresses": {
+    "multisig": "HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR",
+    "program": "H46umyRgSUPAy3BNUanAriALsQw2KfL37uUJs9ZLfcgs",
+    "programData": "ExAiRVn7fZfBLWG8yUd9jBivWFoVuH5m8f71nQwyBRBY",
+    "buffer": "oGVBUqdjVDtVY5jN9Mja6VNRWDWRuTCxquY4sopYABF",
+    "vault": "BmYcaND7hRez4HaFU48VQmdnf15rSZzCfpu813Ddbbro",
+    "spill": "DFjKzxhsoeikC8QWW8sDPvbWynExDQaMrehYyibxVqbF",
+    "creator": "VxGuX3ZiwcjjLeBRgbQcKAUiMfnDH99fD2WhDHUBNwk"
+  },
+  "signatures": [
+    "gC7Fd9tPGVz1YTBmhnuqKZgpuZFf8P9DmWGzDG4oia99xaBbpcRaU8FQMPDFLzKNWctywvuC4LKGHYSBTxDoev2"
+  ],
+  "slots": {
+    "executionSlot": 510074390
+  },
+  "outcome": "success",
+  "result": {
+    "transactionIndex": 8,
+    "kind": "no-slot-guard",
+    "serializedTxSize": 753
+  }
+}

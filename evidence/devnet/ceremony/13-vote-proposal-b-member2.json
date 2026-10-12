@@ -1,0 +1,26 @@
+{
+  "command": "vote",
+  "timestamp": "2026-10-11T23:53:37.692Z",
+  "cluster": "devnet",
+  "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+  "inputs": {
+    "multisig": "HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR",
+    "transactionIndex": 7,
+    "action": "approve"
+  },
+  "addresses": {
+    "multisig": "HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR",
+    "member": "VxGuX3ZiwcjjLeBRgbQcKAUiMfnDH99fD2WhDHUBNwk"
+  },
+  "signatures": [
+    "2GkPR2dctY5J4t2GF7hVnQWnbLtKJYPonUZDTPXdNSEtTQPiCYeN6facv3UDnPexfw3uybshKj3u14ZN4tYVEr8g"
+  ],
+  "slots": {
+    "executionSlot": 510074279
+  },
+  "outcome": "success",
+  "result": {
+    "action": "approve",
+    "member": "VxGuX3ZiwcjjLeBRgbQcKAUiMfnDH99fD2WhDHUBNwk"
+  }
+}

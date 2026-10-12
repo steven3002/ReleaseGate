@@ -1,0 +1,13 @@
+{
+  "step": "vote-proposal-a-member1",
+  "actor": "mobile-mock-wallet",
+  "multisig": "HfR4S98sUkf5VNkm64zQV8eAemmpMnS9DcCcWNz51uaR",
+  "proposalIndex": 6,
+  "proposalPda": "C29JHd56NYNknHHXED6sw9hhGYEBuSkNmwK9fhvpgeQZ",
+  "member": "DFjKzxhsoeikC8QWW8sDPvbWynExDQaMrehYyibxVqbF",
+  "action": "approve",
+  "signature": "52sFKyQHXKYZnPJwkAVqXaoY5jst9YxGaPH2z4FuMxZewryWJ8K1KHsmic75eYrK8GNqtEdTeiXce7LTx8DR4vg6",
+  "slot": 510073387,
+  "confirmationStatus": "finalized",
+  "recordedAt": "2026-10-11T23:50:35Z"
+}

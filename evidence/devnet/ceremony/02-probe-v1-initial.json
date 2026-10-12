@@ -1,0 +1,36 @@
+{
+  "command": "probe",
+  "timestamp": "2026-10-11T22:33:05.169Z",
+  "cluster": "devnet",
+  "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+  "inputs": {
+    "program": "H46umyRgSUPAy3BNUanAriALsQw2KfL37uUJs9ZLfcgs",
+    "inputData": "probe-v1-check"
+  },
+  "addresses": {
+    "program": "H46umyRgSUPAy3BNUanAriALsQw2KfL37uUJs9ZLfcgs"
+  },
+  "signatures": [],
+  "slots": {},
+  "outcome": "success",
+  "result": {
+    "logs": [
+      "Program H46umyRgSUPAy3BNUanAriALsQw2KfL37uUJs9ZLfcgs invoke [1]",
+      "Program log: Program release-demo version 1 running: linear transform",
+      "Program log: Program release-demo version 1 execution complete",
+      "Program H46umyRgSUPAy3BNUanAriALsQw2KfL37uUJs9ZLfcgs consumed 394 of 200000 compute units",
+      "Program return: H46umyRgSUPAy3BNUanAriALsQw2KfL37uUJs9ZLfcgs VjE6PXwFAAAAAAAA",
+      "Program H46umyRgSUPAy3BNUanAriALsQw2KfL37uUJs9ZLfcgs success"
+    ],
+    "returnDataHex": "56313a3d7c05000000000000",
+    "returnDataString": "V1:=|\u0005\u0000\u0000\u0000\u0000\u0000\u0000"
+  },
+  "logs": [
+    "Program H46umyRgSUPAy3BNUanAriALsQw2KfL37uUJs9ZLfcgs invoke [1]",
+    "Program log: Program release-demo version 1 running: linear transform",
+    "Program log: Program release-demo version 1 execution complete",
+    "Program H46umyRgSUPAy3BNUanAriALsQw2KfL37uUJs9ZLfcgs consumed 394 of 200000 compute units",
+    "Program return: H46umyRgSUPAy3BNUanAriALsQw2KfL37uUJs9ZLfcgs VjE6PXwFAAAAAAAA",
+    "Program H46umyRgSUPAy3BNUanAriALsQw2KfL37uUJs9ZLfcgs success"
+  ]
+}

@@ -25,6 +25,8 @@ export async function handleManifest(args: readonly string[]): Promise<number> {
   const commit = getFlag(flags, 'commit') ?? '0000000000000000000000000000000000000000';
   const buildMethod = getFlag(flags, 'build-method') ?? 'cargo-build-sbf';
   const builder = getFlag(flags, 'builder') ?? 'release-preparer';
+  const releaseName = getFlag(flags, 'release-name') ?? 'release-demo';
+  const releaseVersion = getFlag(flags, 'release-version') ?? '2';
   const outPath = getFlag(flags, 'out');
   const recordPath = getFlag(flags, 'record');
   const rpcUrl = getFlag(flags, 'url') ?? 'https://api.devnet.solana.com';
@@ -64,8 +66,8 @@ export async function handleManifest(args: readonly string[]): Promise<number> {
   const manifest = {
     schema: 'releasegate.manifest/1' as const,
     release: {
-      name: 'release-demo',
-      version: '2',
+      name: releaseName,
+      version: releaseVersion,
     },
     cluster: {
       name: 'devnet',
