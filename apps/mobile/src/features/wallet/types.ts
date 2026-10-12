@@ -24,6 +24,12 @@ export interface SignAndSubmitRequest {
   readonly member: string;
   readonly transaction: Transaction;
   readonly submit: (signed: Uint8Array) => Promise<string>;
+  readonly minContextSlot?: number | undefined;
+  /**
+   * Called between wallet sessions, while this app is in the foreground, when
+   * a connect prompt has used up part of the transaction's lifetime.
+   */
+  readonly refreshLifetime?: (() => Promise<void>) | undefined;
   readonly forceSignAndSendFallback?: boolean | undefined;
 }
 

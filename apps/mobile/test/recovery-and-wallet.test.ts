@@ -86,7 +86,7 @@ describe('Wallet transaction & message verification (Pass Mark 11)', () => {
         verifySignedTransactionMessage(builtTx, tamperedTx);
       },
       (err: Error) => {
-        assert.match(err.message, /Wallet altered transaction message bytes; signature refused/);
+        assert.match(err.message, /Wallet altered the reviewed transaction/);
         return true;
       }
     );
@@ -122,6 +122,75 @@ describe('Wallet transaction & message verification (Pass Mark 11)', () => {
       verifySignedTransactionMessage(builtTx, signedTx);
       verifyMemberSignature(signedTx, memberKeypair.publicKey.toBase58());
     });
+  });
+
+  it('accepts wallet-added guard instructions around the unchanged built instruction', () => {
+    const memberKeypair = Keypair.generate();
+    const reviewed = new TransactionInstruction({
+      programId: new PublicKey('SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf'),
+      keys: [{ pubkey: memberKeypair.publicKey, isSigner: true, isWritable: true }],
+      data: Buffer.from([1, 2, 3]),
+    });
+    const guard = new TransactionInstruction({
+      programId: new PublicKey('L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95'),
+      keys: [{ pubkey: memberKeypair.publicKey, isSigner: false, isWritable: false }],
+      data: Buffer.from([7]),
+    });
+
+    const builtTx = new Transaction();
+    builtTx.recentBlockhash = '11111111111111111111111111111111';
+    builtTx.feePayer = memberKeypair.publicKey;
+    builtTx.add(reviewed);
+
+    const extendedTx = new Transaction();
+    extendedTx.recentBlockhash = builtTx.recentBlockhash;
+    extendedTx.feePayer = builtTx.feePayer;
+    extendedTx.add(reviewed, guard);
+    extendedTx.sign(memberKeypair);
+    const returned = Transaction.from(extendedTx.serialize());
+
+    assert.doesNotThrow(() => {
+      verifySignedTransactionMessage(builtTx, returned);
+      verifyMemberSignature(returned, memberKeypair.publicKey.toBase58());
+    });
+  });
+
+  it('refuses added instructions for any other program, or a dropped built instruction', () => {
+    const memberKeypair = Keypair.generate();
+    const reviewed = new TransactionInstruction({
+      programId: new PublicKey('SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf'),
+      keys: [{ pubkey: memberKeypair.publicKey, isSigner: true, isWritable: true }],
+      data: Buffer.from([1, 2, 3]),
+    });
+    const foreign = new TransactionInstruction({
+      programId: new PublicKey('11111111111111111111111111111111'),
+      keys: [{ pubkey: memberKeypair.publicKey, isSigner: true, isWritable: true }],
+      data: Buffer.from([2, 0, 0, 0]),
+    });
+    const guard = new TransactionInstruction({
+      programId: new PublicKey('L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95'),
+      keys: [],
+      data: Buffer.from([7]),
+    });
+
+    const builtTx = new Transaction();
+    builtTx.recentBlockhash = '11111111111111111111111111111111';
+    builtTx.feePayer = memberKeypair.publicKey;
+    builtTx.add(reviewed);
+
+    for (const instructions of [[reviewed, foreign], [guard]]) {
+      const alteredTx = new Transaction();
+      alteredTx.recentBlockhash = builtTx.recentBlockhash;
+      alteredTx.feePayer = builtTx.feePayer;
+      alteredTx.add(...instructions);
+      alteredTx.sign(memberKeypair);
+      const returned = Transaction.from(alteredTx.serialize());
+
+      assert.throws(
+        () => verifySignedTransactionMessage(builtTx, returned),
+        /Wallet altered the reviewed transaction/
+      );
+    }
   });
 
   it('enforces that authorized account matches workspace member', () => {

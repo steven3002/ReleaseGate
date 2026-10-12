@@ -6,7 +6,12 @@ const COLLECTION = 'wallet-authorization';
 export async function getCachedAuthorization(
   clusterId: string
 ): Promise<WalletAuthorization | null> {
-  return await getDocument<WalletAuthorization>(COLLECTION, clusterId);
+  try {
+    return await getDocument<WalletAuthorization>(COLLECTION, clusterId);
+  } catch {
+    // An unreadable entry is treated as no cached authorization
+    return null;
+  }
 }
 
 export async function saveCachedAuthorization(
